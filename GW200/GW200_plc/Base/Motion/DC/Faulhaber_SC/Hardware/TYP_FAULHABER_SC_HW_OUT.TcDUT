@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_FAULHABER_SC_HW_OUT" Id="{c124e481-c65d-4dbd-8968-f1b60ff6ea47}">
+    <Declaration><![CDATA[TYPE TYP_FAULHABER_SC_HW_OUT :
+STRUCT
+	Speed AT %Q*: INT;
+	Direction AT %Q*: BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_RGB_LED_CHANNEL_OUT" Id="{3029ffd7-0704-4055-953c-a9e210538627}">
+    <Declaration><![CDATA[TYPE TYP_RGB_LED_CHANNEL_OUT :
+STRUCT
+	PWM AT %Q* : INT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_VALVE_53_STATUS" Id="{4fb4a8e9-bb37-4ba7-af2b-98c573b6620b}">
+    <Declaration><![CDATA[TYPE TYP_VALVE_53_STATUS :
+STRUCT
+	ReachedHP : BOOL;
+	ReachedWP : BOOL;
+	Error : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

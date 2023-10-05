@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_VALVE_POS_CONF" Id="{8ee99a1a-86ac-4949-bfae-ee5210b55396}">
+    <Declaration><![CDATA[TYPE TYP_VALVE_POS_CONF :
+STRUCT
+	Sensorless : BOOL; (* no sensor, reached status after SensorlessDelay *)
+	SensorlessDelay : TIME; (* delay for reached status in sensorless mode *)
+	Permanent : BOOL := TRUE; // Output stays on after reaching position
+	Timeout : TYP_VALVE_TIMEOUT_ALARM_CONF;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

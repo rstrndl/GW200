@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_VALVE_53_CONF" Id="{d5013603-dcc7-495b-b2df-53a3aea685e3}">
+    <Declaration><![CDATA[TYPE TYP_VALVE_53_CONF :
+STRUCT
+	HP : TYP_VALVE_POS_CONF;
+	WP : TYP_VALVE_POS_CONF;
+	HP_WP : TYP_VALVE_TIMEOUT_ALARM_CONF; // Alarm for both HP and WP sensors active
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FC_SCALE" Id="{5436500b-12cc-4fe8-bf79-dc16f19ace2d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION FC_SCALE : REAL
+VAR_INPUT
+	In : REAL;
+	Conf : TYP_SCALE_CONF;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[FC_SCALE := ((Conf.OutMax - Conf.OutMin) / (Conf.InMax - Conf.InMin) * In) + Conf.OutMin;]]></ST>
+    </Implementation>
+    <LineIds Name="FC_SCALE">
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_EL6001_IN" Id="{21d64d2a-902b-44c9-9c2f-538701dcf838}">
+    <Declaration><![CDATA[TYPE TYP_HW_EL6001_IN :
+STRUCT
+	COM AT %I*: KL6InData22B;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

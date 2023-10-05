@@ -1,0 +1,466 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <FileVersion>1.0.0.0</FileVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{c3ab1302-3e35-4246-8c4d-5190a0093ae0}</ProjectGuid>
+    <SubObjectsSortedByName>True</SubObjectsSortedByName>
+    <DownloadApplicationInfo>true</DownloadApplicationInfo>
+    <WriteProductVersion>true</WriteProductVersion>
+    <GenerateTpy>false</GenerateTpy>
+    <Name>GW200_plc</Name>
+    <ProgramVersion>3.1.4024.0</ProgramVersion>
+    <Application>{4db2ebc4-1bcb-4e7c-abff-9ce3bf3422cb}</Application>
+    <TypeSystem>{d229b493-5395-4077-886c-c1071ceac1c7}</TypeSystem>
+    <Implicit_Task_Info>{5237e96d-d63f-4ea6-849e-a25290e17c09}</Implicit_Task_Info>
+    <Implicit_KindOfTask>{6dffcf22-5e54-4d95-8778-7971d18fb26e}</Implicit_KindOfTask>
+    <Implicit_Jitter_Distribution>{397faade-241c-4adc-b9c5-7c4de0c8b44a}</Implicit_Jitter_Distribution>
+    <LibraryReferences>{5cba498e-5b5e-4e70-9236-5b53df36431e}</LibraryReferences>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Base" />
+    <Folder Include="Base\Alarms" />
+    <Folder Include="Base\Alarms\Alarm" />
+    <Folder Include="Base\Alarms\Handler" />
+    <Folder Include="Base\Alarms\Repository" />
+    <Folder Include="Base\Basic" />
+    <Folder Include="Base\DateTime" />
+    <Folder Include="Base\Files" />
+    <Folder Include="Base\Math" />
+    <Folder Include="Base\Motion" />
+    <Folder Include="Base\Motion\DC" />
+    <Folder Include="Base\Motion\DC\DcMotor" />
+    <Folder Include="Base\Motion\DC\DcMotor\Hardware" />
+    <Folder Include="Base\Motion\DC\Faulhaber_SC" />
+    <Folder Include="Base\Motion\DC\Faulhaber_SC\Hardware" />
+    <Folder Include="Base\Pneumatics" />
+    <Folder Include="Base\Pneumatics\VacuumGen" />
+    <Folder Include="Base\Pneumatics\VacuumGen\Hardware" />
+    <Folder Include="Base\Pneumatics\Valve53" />
+    <Folder Include="Base\Pneumatics\Valve53\Hardware" />
+    <Folder Include="Base\Robotics" />
+    <Folder Include="Base\Robotics\UR" />
+    <Folder Include="Base\Robotics\UR\Profinet" />
+    <Folder Include="Base\Serial" />
+    <Folder Include="Base\Signalling" />
+    <Folder Include="Base\Signalling\BannerK50" />
+    <Folder Include="Base\Signalling\BannerK50\Hardware" />
+    <Folder Include="Base\Signalling\Lights" />
+    <Folder Include="Base\Signalling\RGB" />
+    <Folder Include="Base\Signalling\RGB\Hardware" />
+    <Folder Include="Base\States" />
+    <Folder Include="Base\String" />
+    <Folder Include="Base\Tooling" />
+    <Folder Include="Base\Tooling\DepragAST11" />
+    <Folder Include="Base\Twiddlers" />
+    <Folder Include="Base\Vision" />
+    <Folder Include="Base\Vision\Cognex" />
+    <Folder Include="Base\Vision\Cognex\3D_L4000" />
+    <Folder Include="Base\Vision\Cognex\3D_L4000\OpcUa" />
+    <Folder Include="Base\Vision\Cognex\3D_L4000\Profinet" />
+    <Folder Include="Hardware" />
+    <Folder Include="Main" />
+    <Folder Include="Main\PressureControl" />
+    <Folder Include="Main\PurgeN2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Base\Alarms\Alarm\E_ALARM_ACK_TYPE.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\Alarm\E_ALARM_STATE.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\Alarm\FB_ALARM.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\Alarm\TYP_ALARM_CONFIG.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\Handler\FBA_ALARM_HANDLER.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\Handler\FB_ALARM_HANDLER.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\I_ALARM_HANDLER.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\Repository\FB_ALARM_INSTANCE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\Repository\FB_ALARM_REPOSITORY.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\Repository\TYP_ALARM_HISTORY_ENTRY.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\Repository\TYP_VISU_ALARM.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Alarms\TYP_ALARM_DEVICE_CONFIG.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\BASE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Basic\FB_RS_TRIG.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\DateTime\FB_DATETIME.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Files\FB_FIND_FILES.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Math\FC_SCALE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Math\TYP_SCALE_CONF.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Motion\DC\DcMotor\FB_DC_MOTOR.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Motion\DC\DcMotor\Hardware\TYP_DC_MOTOR_HW.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Motion\DC\DcMotor\Hardware\TYP_DC_MOTOR_HW_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Motion\DC\DcMotor\Hardware\TYP_DC_MOTOR_HW_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Motion\DC\DcMotor\TYP_DC_MOTOR_STATUS.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Motion\DC\Faulhaber_SC\FB_FAULHABER_SC.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Motion\DC\Faulhaber_SC\Hardware\TYP_FAULHABER_SC_HW.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Motion\DC\Faulhaber_SC\Hardware\TYP_FAULHABER_SC_HW_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Motion\DC\Faulhaber_SC\Hardware\TYP_FAULHABER_SC_HW_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Motion\DC\Faulhaber_SC\TYP_FAULHABER_SC_CTRL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\FB_VALVE_TIMEOUT_ALARM.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\TYP_VALVE_POS_CONF.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\TYP_VALVE_POS_HW.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\TYP_VALVE_TIMEOUT_ALARM_CONF.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\VacuumGen\FB_VAC_GEN.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\VacuumGen\Hardware\TYP_VAC_GEN_HW.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\VacuumGen\Hardware\TYP_VAC_GEN_HW_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\VacuumGen\Hardware\TYP_VAC_GEN_HW_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\VacuumGen\TYP_VAC_GEN_ALARM_CONF.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\VacuumGen\TYP_VAC_GEN_CONF.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\VacuumGen\TYP_VAC_GEN_CTRL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\VacuumGen\TYP_VAC_GEN_STATUS.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\Valve53\FB_VALVE_53.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\Valve53\Hardware\TYP_VALVE_53_HW.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\Valve53\Hardware\TYP_VALVE_53_HW_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\Valve53\Hardware\TYP_VALVE_53_HW_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\Valve53\TYP_VALVE_53_CONF.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\Valve53\TYP_VALVE_53_CTRL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Pneumatics\Valve53\TYP_VALVE_53_STATUS.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Robotics\TYP_REAL_XYZ.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Robotics\UR\Profinet\E_UR_PN_ROBOT_MODE.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Robotics\UR\Profinet\FB_UR_PN.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Robotics\UR\Profinet\FB_UR_PN_IO.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Robotics\UR\Profinet\TYP_HW_UR_PN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Robotics\UR\Profinet\TYP_HW_UR_PN_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Robotics\UR\Profinet\TYP_HW_UR_PN_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Robotics\UR\Profinet\TYP_UR_PN_STATE.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Robotics\UR\Profinet\TYP_UR_PN_TCP.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Serial\FB_EL6001_LINE_CTRL.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Serial\FB_EL6001_RS232.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Serial\TYP_HW_EL6001.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Serial\TYP_HW_EL6001_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Serial\TYP_HW_EL6001_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Serial\TYP_SERIAL_DATA.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Signalling\BannerK50\FB_BANNER_K50.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Signalling\BannerK50\Hardware\TYP_BAN_K50_HW.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Signalling\BannerK50\Hardware\TYP_BAN_K50_HW_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Signalling\BannerK50\Hardware\TYP_BAN_K50_HW_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Signalling\Lights\TYP_RYG_TOWER_HW.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Signalling\Lights\TYP_RYG_TOWER_HW_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Signalling\RGB\FB_RGB_LED.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Signalling\RGB\Hardware\TYP_RGB_LED_CHANNEL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Signalling\RGB\Hardware\TYP_RGB_LED_CHANNEL_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Signalling\RGB\Hardware\TYP_RGB_LED_HW.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\States\FBA_SEQUENCE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\States\FB_SEQUENCE_VISU.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\States\FB_STATE_MACHINE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\String\FB_STRINGS.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Tooling\DepragAST11\TYP_DEPRAG_AST11_HW.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Tooling\DepragAST11\TYP_DEPRAG_AST11_HW_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Tooling\DepragAST11\TYP_DEPRAG_AST11_HW_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Twiddlers\FC_FLIP_DWORD.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Twiddlers\FC_FLIP_WORD.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Twiddlers\FC_GET_BIT_IN_BYTE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Twiddlers\FC_MEMCPY_FLIP_WORD.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Twiddlers\FC_MEMCPY_SWAP_BYTE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Twiddlers\FC_MEMCPY_SWAP_WORD.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Twiddlers\FC_SET_BIT_IN_BYTE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\OpcUa\TYP_HW_L4000_OPC.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\OpcUa\TYP_HW_L4000_OPC_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\OpcUa\TYP_HW_L4000_OPC_JOB_CHANGE.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\OpcUa\TYP_HW_L4000_OPC_JOB_CHANGE_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\OpcUa\TYP_HW_L4000_OPC_JOB_CHANGE_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\OpcUa\TYP_HW_L4000_OPC_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\Profinet\TYP_HW_L4000.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\Profinet\TYP_HW_L4000_ACQ_CTRL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\Profinet\TYP_HW_L4000_ACQ_STATUS.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\Profinet\TYP_HW_L4000_EXT_CTRL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\Profinet\TYP_HW_L4000_EXT_STATUS.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\Profinet\TYP_HW_L4000_IN.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\Profinet\TYP_HW_L4000_INSP_CTRL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\Profinet\TYP_HW_L4000_INSP_RESULTS.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\Profinet\TYP_HW_L4000_INSP_STATUS.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Base\Vision\Cognex\3D_L4000\Profinet\TYP_HW_L4000_OUT.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\E_MAIN_STATE.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\E_COLD_START_STATE.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\MAIN.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\PressureControl\FB_PRES_CNTRL.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\PressureControl\gPresCntrl.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="Main\PressureControl\TYP_PRES_CNTRL_STATUS.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\PressureControl\TYP_PRES_CNTRL_PARAMETER.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\PressureControl\TYP_PRES_CNTRL_CONTROL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\PurgeN2\FB_PURGE_N2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\PurgeN2\gPurgeN2.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="Main\PurgeN2\TYP_PURGE_N2_STATUS.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\PurgeN2\TYP_PURGE_N2_PARAMETER.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\PurgeN2\TYP_PURGE_N2_CONTROL.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PlcTask.TcTTO">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GW200_plc.tmc">
+      <SubType>Content</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderReference Include="Tc2_SerialCom">
+      <DefaultResolution>Tc2_SerialCom, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_SerialCom</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_Standard">
+      <DefaultResolution>Tc2_Standard, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Standard</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_System">
+      <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_System</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_Utilities">
+      <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Utilities</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc3_JsonXml">
+      <DefaultResolution>Tc3_JsonXml, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc3_JsonXml</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc3_Module">
+      <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc3_Module</Namespace>
+    </PlaceholderReference>
+  </ItemGroup>
+  <ProjectExtensions>
+    <PlcProjectOptions>
+      <XmlArchive>
+        <Data>
+          <o xml:space="preserve" t="OptionKey">
+      <v n="Name">"&lt;ProjectRoot&gt;"</v>
+      <d n="SubKeys" t="Hashtable" />
+      <d n="Values" t="Hashtable" />
+    </o>
+        </Data>
+        <TypeList>
+          <Type n="Hashtable">System.Collections.Hashtable</Type>
+          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
+    </PlcProjectOptions>
+  </ProjectExtensions>
+</Project>

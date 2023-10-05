@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_VALVE_53" Id="{060ad851-2ee5-4707-9f9b-7f4eae8331da}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_VALVE_53
+VAR_IN_OUT
+	Hardware : TYP_VALVE_53_HW;
+END_VAR
+VAR_INPUT
+	Control : TYP_VALVE_53_CTRL;
+	Config : TYP_VALVE_53_CONF;
+	AlarmConfig : TYP_ALARM_DEVICE_CONFIG;
+END_VAR
+VAR_OUTPUT
+	Status : TYP_VALVE_53_STATUS;
+END_VAR
+VAR
+	CmdHP : BOOL;
+	CmdWP : BOOL;
+	TimeoutHP : FB_VALVE_TIMEOUT_ALARM;
+	TimeoutWP : FB_VALVE_TIMEOUT_ALARM;
+	TimeoutHP_WP : FB_VALVE_TIMEOUT_ALARM;
+	SensorlessDelayHP : TON;
+	SensorlessDelayWP : TON;
+	ServiceEdge : R_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TimeoutHP.Alarm.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
+TimeoutHP.Alarm.Config.Name := CONCAT(AlarmConfig.Name, '*HP_ALARM');
+TimeoutHP.Condition := NOT Hardware.In.ReachedHP AND Hardware.Out.CmdHP;
+TimeoutHP(Config := Config.HP.Timeout, Handler := AlarmConfig.Handler);
+
+TimeoutWP.Alarm.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
+TimeoutWP.Alarm.Config.Name := CONCAT(AlarmConfig.Name, '*WP_ALARM');
+TimeoutWP.Condition := NOT Hardware.In.ReachedWP AND Hardware.Out.CmdWP;
+TimeoutWP(Config := Config.WP.Timeout, Handler := AlarmConfig.Handler);
+
+TimeoutHP_WP.Alarm.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
+TimeoutHP_WP.Alarm.Config.Name := CONCAT(AlarmConfig.Name, '*HP_WP_ALARM');
+TimeoutHP_WP.Condition := Hardware.In.ReachedHP AND Hardware.In.ReachedWP;
+TimeoutHP_WP(Config := Config.HP_WP, Handler := AlarmConfig.Handler);
+
+ServiceEdge(CLK := Control.ServiceEnable);
+
+IF ServiceEdge.Q THEN // Remember command when entering service mode to avoid unpredictable movements
+	Control.ServiceHP := CmdHP;
+	Control.ServiceWP := CmdWP;
+END_IF;
+
+IF Control.ServiceEnable THEN
+	CmdHP := Control.ServiceHP;
+	CmdWP := Control.ServiceWP;
+END_IF;
+
+Hardware.Out.CmdHP := CmdHP;
+Hardware.Out.CmdWP := CmdWP;
+
+IF Control.BlockOutputs THEN
+	Hardware.Out.CmdHP := FALSE;
+	Hardware.Out.CmdWP := FALSE;
+END_IF;
+
+SensorlessDelayHP(IN := CmdHP AND Config.HP.Sensorless, PT := Config.HP.SensorlessDelay);
+SensorlessDelayWP(IN := CmdWP AND Config.WP.Sensorless, PT := Config.WP.SensorlessDelay);
+
+Status.ReachedHP := ((Hardware.In.ReachedHP AND NOT Hardware.In.ReachedWP) AND NOT Config.HP.Sensorless) OR SensorlessDelayHP.Q;
+Status.ReachedWP := ((Hardware.In.ReachedWP AND NOT Hardware.In.ReachedHP) AND NOT Config.WP.Sensorless) OR SensorlessDelayWP.Q;
+
+// Turn off physical output in case of non-permanent position mode
+IF NOT Control.ServiceEnable THEN
+	IF Status.ReachedHP AND NOT Config.HP.Permanent THEN
+		Hardware.Out.CmdHP := FALSE;
+	END_IF;
+	
+	IF Status.ReachedWP AND NOT Config.WP.Permanent THEN
+		Hardware.Out.CmdWP := FALSE;
+	END_IF;
+END_IF;
+
+Status.Error := TimeoutHP.Alarm.IsActive OR TimeoutWP.Alarm.IsActive OR TimeoutHP_WP.Alarm.IsActive;
+
+]]></ST>
+    </Implementation>
+    <Method Name="ActivateHP" Id="{18494b42-705e-42ef-b35d-a59d09142d9d}">
+      <Declaration><![CDATA[METHOD PUBLIC ActivateHP : REFERENCE TO FB_VALVE_53
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.Control.Enable AND THIS^.Control.EnableHP THEN
+	CmdHP := TRUE;
+	CmdWP := FALSE;
+END_IF;
+
+
+ActivateHP REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ActivateWP" Id="{9f4337d1-fe3b-40e5-af2a-c0e494a707d3}">
+      <Declaration><![CDATA[METHOD PUBLIC ActivateWP : REFERENCE TO FB_VALVE_53
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.Control.Enable AND THIS^.Control.EnableWP THEN
+	CmdWP := TRUE;
+	CmdHP := FALSE;
+END_IF;
+
+
+ActivateWP REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="IO" Id="{7327eb45-87fb-44f5-910d-bd6491dc40bc}">
+      <Declaration><![CDATA[PROPERTY PUBLIC IO : REFERENCE TO TYP_VALVE_53_HW]]></Declaration>
+      <Get Name="Get" Id="{e5ee1410-9522-4917-beb6-d4ee050d801d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+     IO REF= THIS^.Hardware;
+END_IF]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Release" Id="{e25a8d5c-c307-4cdf-bda4-e4d469900e68}">
+      <Declaration><![CDATA[METHOD PUBLIC Release : REFERENCE TO FB_VALVE_53
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.Control.Enable THEN
+	CmdWP := FALSE;
+	CmdHP := FALSE;
+END_IF;
+
+Release REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{9adcc4ee-a2fb-4218-a8c9-f4db81832764}">
+      <Declaration><![CDATA[METHOD PUBLIC Reset : REFERENCE TO FB_VALVE_53
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.CmdHP := FALSE;
+THIS^.CmdWP := FALSE;
+THIS^.Control.ServiceEnable := FALSE;
+THIS^.Control.ServiceHP := FALSE;
+THIS^.Control.ServiceWP := FALSE;
+
+Reset REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_VALVE_53">
+      <LineId Id="45" Count="1" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="105" Count="2" />
+      <LineId Id="135" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="109" Count="2" />
+      <LineId Id="136" Count="0" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="74" Count="3" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="83" Count="1" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="161" Count="0" />
+      <LineId Id="163" Count="0" />
+      <LineId Id="165" Count="0" />
+      <LineId Id="164" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="87" Count="2" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="93" Count="1" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="138" Count="0" />
+      <LineId Id="137" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="99" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_VALVE_53.ActivateHP">
+      <LineId Id="24" Count="5" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_VALVE_53.ActivateWP">
+      <LineId Id="24" Count="5" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_VALVE_53.IO.Get">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="2" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_VALVE_53.Release">
+      <LineId Id="8" Count="2" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_VALVE_53.Reset">
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="3" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

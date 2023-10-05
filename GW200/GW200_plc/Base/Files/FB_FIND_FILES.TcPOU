@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_FIND_FILES" Id="{1e92509d-c6a4-4950-af30-a75beb75dab4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_FIND_FILES
+VAR_IN_OUT
+	Filenames : ARRAY[*] OF STRING;
+END_VAR
+VAR_INPUT
+	Filter : STRING;
+	Execute : BOOL;
+	Abort : BOOL;
+END_VAR
+VAR_OUTPUT
+	Busy : BOOL;
+	Done : BOOL;
+	Error : BOOL;
+END_VAR
+VAR
+	State : INT;
+	i : DINT;
+	FindFile : FB_EnumFindFileEntry;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE State OF 
+	0: 
+		Busy := FALSE;
+		IF Execute THEN
+			Done := FALSE;
+			Error := FALSE;
+			Busy := TRUE;
+			Execute := FALSE;
+			FindFile.eCmd := eEnumCmd_First;
+			FindFile.sPathName := Filter;
+			
+			FOR i := LOWER_BOUND(Filenames, 1) TO UPPER_BOUND(Filenames, 1) DO
+				Filenames[i] := '';
+			END_FOR;
+			
+			i := LOWER_BOUND(Filenames, 1);
+			State := 10;
+		END_IF;
+		
+	10:
+		IF Abort THEN
+            Abort      := FALSE;
+            FindFile.eCmd := eEnumCmd_Abort;
+        END_IF
+        FindFile(bExecute := FALSE);
+        FindFile(bExecute := TRUE);
+        State := 20;
+		
+	20:
+		FindFile(bExecute := FALSE);
+        IF NOT FindFile.bBusy THEN
+            IF NOT FindFile.bError THEN
+                IF NOT FindFile.bEOE AND i <= UPPER_BOUND(Filenames, 1) THEN
+					Filenames[i] := FindFile.stFindFile.sFileName;
+					i := i + 1;
+					FindFile.eCmd := eEnumCmd_Next;
+					State := 10;
+                ELSE
+					Done := TRUE;
+                    State := 0;
+                END_IF
+            ELSE
+                Error := TRUE;
+                State     := 0;
+            END_IF
+        END_IF
+END_CASE;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_FIND_FILES">
+      <LineId Id="9" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="83" Count="1" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="102" Count="4" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="50" Count="1" />
+      <LineId Id="56" Count="5" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="67" Count="3" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="75" Count="5" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="24" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

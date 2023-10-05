@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_UR_PN_OUT" Id="{7e0b179e-68ad-4dbc-96e2-28d27af03d6e}">
+    <Declaration><![CDATA[TYPE TYP_HW_UR_PN_OUT :
+STRUCT
+	O2TURIO AT %Q*: ARRAY[0..23] OF BYTE;
+	O2TURGenReg1 AT %Q*: ARRAY[0..99] OF BYTE;
+	O2TURGenReg2 AT %Q*: ARRAY[0..99] OF BYTE;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

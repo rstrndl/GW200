@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_L4000_OPC_OUT" Id="{1875f6e4-b11f-4610-bb12-97ac633017b8}">
+    <Declaration><![CDATA[TYPE TYP_HW_L4000_OPC_OUT :
+STRUCT
+	WriteEnable AT %Q* : BOOL;
+	Online AT %Q* : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ALARM" Id="{a9f298f4-ca32-450c-a79c-fc4266c53d1d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_ALARM
+VAR_IN_OUT
+	Handler : FB_ALARM_HANDLER;
+END_VAR
+VAR_INPUT
+	Config : TYP_ALARM_CONFIG;
+END_VAR
+VAR_OUTPUT
+	State : E_ALARM_STATE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Acknowledge" Id="{00199362-b98d-451a-be12-3d64270740b1}">
+      <Declaration><![CDATA[METHOD PUBLIC Acknowledge : REFERENCE TO FB_ALARM
+VAR_INPUT
+END_VAR
+VAR
+	PreviousState : E_ALARM_STATE;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+// Checking the VAR_IN_OUT reference, leave the current method in case of invalid reference
+IF NOT __ISVALIDREF(THIS^.Handler) THEN
+     RETURN;
+END_IF
+
+
+PreviousState := THIS^.State;
+
+CASE THIS^.State OF 
+	
+	E_ALARM_STATE.ACTIVE_UNACK:
+	
+		CASE THIS^.Config.Acknowledge OF
+			
+			E_ALARM_ACK_TYPE.ONLY_ACK:
+				THIS^.State := E_ALARM_STATE.INACTIVE;
+				
+			E_ALARM_ACK_TYPE.ACK_OR_RESET:
+				THIS^.State := E_ALARM_STATE.INACTIVE;
+			
+			E_ALARM_ACK_TYPE.ACK_AFTER_RESET:
+				;
+				
+			ELSE
+				THIS^.State := E_ALARM_STATE.ACTIVE_ACK;
+			
+		END_CASE;
+
+	E_ALARM_STATE.INACTIVE_UNACK:
+		
+		THIS^.State := E_ALARM_STATE.INACTIVE;
+					
+	ELSE
+		;
+		
+END_CASE;
+
+IF THIS^.State <> PreviousState THEN
+	THIS^.Handler.RegisterAlarm(Alarm := THIS^, Prefix := '', Update := TRUE);
+END_IF;
+
+Acknowledge REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AcknowledgeNoUpdate" Id="{07562f46-cb18-4f39-ad81-bdeccc127250}">
+      <Declaration><![CDATA[METHOD PUBLIC AcknowledgeNoUpdate : REFERENCE TO FB_ALARM
+VAR_INPUT
+END_VAR
+VAR
+	PreviousState : E_ALARM_STATE;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+// Checking the VAR_IN_OUT reference, leave the current method in case of invalid reference
+IF NOT __ISVALIDREF(THIS^.Handler) THEN
+     RETURN;
+END_IF
+
+
+PreviousState := THIS^.State;
+
+CASE THIS^.State OF 
+	
+	E_ALARM_STATE.ACTIVE_UNACK:
+	
+		CASE THIS^.Config.Acknowledge OF
+			
+			E_ALARM_ACK_TYPE.ONLY_ACK:
+				THIS^.State := E_ALARM_STATE.INACTIVE;
+				
+			E_ALARM_ACK_TYPE.ACK_OR_RESET:
+				THIS^.State := E_ALARM_STATE.INACTIVE;
+			
+			E_ALARM_ACK_TYPE.ACK_AFTER_RESET:
+				;
+				
+			ELSE
+				THIS^.State := E_ALARM_STATE.ACTIVE_ACK;
+			
+		END_CASE;
+
+	E_ALARM_STATE.INACTIVE_UNACK:
+		
+		THIS^.State := E_ALARM_STATE.INACTIVE;
+					
+	ELSE
+		;
+		
+END_CASE;
+
+IF THIS^.State <> PreviousState THEN
+	THIS^.Handler.RegisterAlarm(Alarm := THIS^, Prefix := '', Update := FALSE);
+END_IF;
+
+AcknowledgeNoUpdate REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Activate" Id="{165d8d33-ea10-4d15-87ae-5005372ac614}">
+      <Declaration><![CDATA[METHOD PUBLIC Activate : REFERENCE TO FB_ALARM
+VAR_INPUT
+END_VAR
+VAR
+	PreviousState : E_ALARM_STATE;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+// Checking the VAR_IN_OUT reference, leave the current method in case of invalid reference
+IF NOT __ISVALIDREF(THIS^.Handler) THEN
+     RETURN;
+END_IF
+
+
+PreviousState := THIS^.State;
+
+CASE THIS^.State OF 
+	
+	E_ALARM_STATE.ACTIVE_ACK:
+		// Keeps the state as active and acknowledged
+		;
+			
+	ELSE
+		// Any other state will turn it into active and unacknowledged
+		THIS^.State := E_ALARM_STATE.ACTIVE_UNACK;
+		
+END_CASE;
+
+IF THIS^.State <> PreviousState THEN
+	THIS^.Handler.RegisterAlarm(Alarm := THIS^, Prefix := '', Update := TRUE);
+END_IF;
+
+Activate REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="IsActive" Id="{8925a5ee-41cc-4f64-adb7-4a3115971f9f}">
+      <Declaration><![CDATA[PROPERTY PUBLIC IsActive : BOOL]]></Declaration>
+      <Get Name="Get" Id="{523c8c41-fc0b-4eb3-b34b-556dce47cb2a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IsActive := THIS^.State = E_ALARM_STATE.ACTIVE_ACK OR THIS^.State = E_ALARM_STATE.ACTIVE_UNACK;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Reset" Id="{7bb42957-5629-472c-9636-6a4199d056cc}">
+      <Declaration><![CDATA[METHOD PUBLIC Reset : REFERENCE TO FB_ALARM
+VAR_INPUT
+END_VAR
+VAR
+	PreviousState : E_ALARM_STATE;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+// Checking the VAR_IN_OUT reference, leave the current method in case of invalid reference
+IF NOT __ISVALIDREF(THIS^.Handler) THEN
+     RETURN;
+END_IF
+
+
+PreviousState := THIS^.State;
+
+CASE THIS^.State OF 
+	
+	E_ALARM_STATE.ACTIVE_UNACK:
+	
+		CASE THIS^.Config.Acknowledge OF
+			
+			E_ALARM_ACK_TYPE.ONLY_RESET:
+				THIS^.State := E_ALARM_STATE.INACTIVE;
+				
+			E_ALARM_ACK_TYPE.ACK_OR_RESET:
+				THIS^.State := E_ALARM_STATE.INACTIVE;
+				
+			ELSE
+				THIS^.State := E_ALARM_STATE.INACTIVE_UNACK;
+			
+		END_CASE;
+		
+	E_ALARM_STATE.ACTIVE_ACK:
+		THIS^.State := E_ALARM_STATE.INACTIVE;
+			
+	ELSE
+		;
+		
+END_CASE;
+
+IF THIS^.State <> PreviousState THEN
+	THIS^.Handler.RegisterAlarm(Alarm := THIS^, Prefix := '', Update := TRUE);
+END_IF;
+
+Reset REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_ALARM">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM.Acknowledge">
+      <LineId Id="97" Count="6" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="42" Count="1" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="54" Count="6" />
+      <LineId Id="86" Count="2" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="83" Count="1" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="49" Count="1" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="30" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM.AcknowledgeNoUpdate">
+      <LineId Id="97" Count="6" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="42" Count="1" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="54" Count="6" />
+      <LineId Id="86" Count="2" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="83" Count="1" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="49" Count="1" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="30" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM.Activate">
+      <LineId Id="51" Count="6" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="42" Count="1" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM.IsActive.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM.Reset">
+      <LineId Id="77" Count="5" />
+      <LineId Id="75" Count="1" />
+      <LineId Id="46" Count="1" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="55" Count="1" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="64" Count="5" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

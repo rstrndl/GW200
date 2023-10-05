@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FC_MEMCPY_FLIP_WORD" Id="{5919394a-bf09-4025-a77b-5dae90416827}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION FC_MEMCPY_FLIP_WORD : BOOL
+VAR_IN_OUT
+	Source : ARRAY[*] OF BYTE;
+END_VAR
+VAR_INPUT
+	Dest : POINTER TO BYTE;
+END_VAR
+VAR
+	ArrLen : UDINT;
+	NewArray : POINTER TO BYTE;
+	i : DINT;
+	Overflow : DINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ArrLen := DINT_TO_UDINT((UPPER_BOUND(Source,1) - LOWER_BOUND(Source,1)) + 1);
+
+NewArray := __NEW(BYTE, ArrLen);
+Overflow := UDINT_TO_DINT(ArrLen MOD 4);
+
+FOR i := LOWER_BOUND(Source,1) TO UPPER_BOUND(Source,1) BY 4 DO
+	IF i < (UPPER_BOUND(Source,1) - Overflow) THEN
+		NewArray[i] := Source[i + 3];
+		NewArray[i + 1] := Source[i + 2];
+		NewArray[i + 2] := Source[i + 1];
+		NewArray[i + 3] := Source[i];
+	ELSE
+		NewArray[i] := Source[i];
+	END_IF;
+END_FOR;
+
+MEMCPY(Dest, NewArray, ArrLen);
+
+__DELETE(NewArray);]]></ST>
+    </Implementation>
+    <LineIds Name="FC_MEMCPY_FLIP_WORD">
+      <LineId Id="26" Count="1" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="72" Count="1" />
+      <LineId Id="36" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="40" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_UR_PN_IN" Id="{a9768e0b-69e2-4c88-8a97-decf23038aa3}">
+    <Declaration><![CDATA[TYPE TYP_HW_UR_PN_IN :
+STRUCT
+	T2OURState AT %I*: ARRAY[0..31] OF BYTE;
+	T2OURIO AT %I*: ARRAY[0..67] OF BYTE;
+	T2OURJoints AT %I*: ARRAY[0..103] OF BYTE;
+	T2OURTCP AT %I*: ARRAY[0..75] OF BYTE;
+	T2OURBitReg AT %I*: ARRAY[0..7] OF BYTE;
+	T2OURIntReg AT %I*: ARRAY[0..95] OF BYTE;
+	T2OURFloatReg AT %I*: ARRAY[0..95] OF BYTE;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

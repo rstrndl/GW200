@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_PRES_CNTRL_PARAMETER" Id="{c0239b4a-ca41-4269-8e00-d0ff8878b2f9}">
+    <Declaration><![CDATA[TYPE TYP_PRES_CNTRL_PARAMETER :
+STRUCT
+	SetPoint : REAL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

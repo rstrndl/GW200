@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_DC_MOTOR" Id="{58c5ca15-8c93-4d48-93fa-508af6307ab4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DC_MOTOR
+VAR_IN_OUT
+	Hardware : TYP_DC_MOTOR_HW;
+END_VAR
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	Status : TYP_DC_MOTOR_STATUS;
+END_VAR
+VAR
+	_cmdRun : BOOL;
+	_cmdChangeDir : BOOL;
+	_cmdNewDir : BOOL;
+	PreDelay : TON;
+	PostDelay : TON;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF _cmdRun AND NOT _cmdChangeDir THEN
+	IF Hardware.Out.Direction AND Hardware.In.LimitWP THEN
+		_cmdRun := FALSE;
+	ELSIF NOT Hardware.Out.Direction AND Hardware.In.LimitHP THEN
+		_cmdRun := FALSE;
+	END_IF;
+END_IF;
+
+PreDelay(IN := _cmdChangeDir, PT := T#500MS);
+PostDelay(IN := PreDelay.Q, PT := T#500MS);
+
+IF _cmdChangeDir THEN
+	THIS^.Hardware.Out.Run := FALSE;
+	
+	IF PostDelay.Q THEN
+		_cmdChangeDir := FALSE;
+	ELSIF PreDelay.Q THEN
+		THIS^.Hardware.Out.Direction := _cmdNewDir;
+	END_IF;
+ELSE
+	THIS^.Hardware.Out.Run := _cmdRun;
+END_IF;
+
+Status.ReachedHP := Hardware.In.LimitHP;
+Status.ReachedWP := Hardware.In.LimitWP;
+]]></ST>
+    </Implementation>
+    <Method Name="Run" Id="{075a6a92-2f68-4814-b735-9da70ac4d4f0}">
+      <Declaration><![CDATA[METHOD PUBLIC Run : REFERENCE TO FB_DC_MOTOR
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_cmdRun := TRUE;
+
+Run REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetDirection" Id="{84085ec3-a731-4a3c-a54b-3efb1bd39aa6}">
+      <Declaration><![CDATA[METHOD PUBLIC SetDirection : REFERENCE TO FB_DC_MOTOR
+VAR_INPUT
+	Direction : BOOL; // FALSE = forward, TRUE = reverse
+END_VAR
+VAR
+	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_cmdChangeDir := TRUE;
+_cmdNewDir := Direction;
+
+SetDirection REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Stop" Id="{6074e050-82df-4a55-8220-4f9505d7fb3b}">
+      <Declaration><![CDATA[METHOD PUBLIC Stop : REFERENCE TO FB_DC_MOTOR
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_cmdRun := FALSE;
+
+Stop REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_DC_MOTOR">
+      <LineId Id="9" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="43" Count="3" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="41" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="35" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DC_MOTOR.Run">
+      <LineId Id="14" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DC_MOTOR.SetDirection">
+      <LineId Id="20" Count="1" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DC_MOTOR.Stop">
+      <LineId Id="14" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

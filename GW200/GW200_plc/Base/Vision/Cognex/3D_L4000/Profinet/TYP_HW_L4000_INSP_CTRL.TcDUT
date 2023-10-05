@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_L4000_INSP_CTRL" Id="{426f2897-e032-4ee6-95d5-a8613cf993eb}">
+    <Declaration><![CDATA[TYPE TYP_HW_L4000_INSP_CTRL :
+STRUCT
+	EnableResultsBuffering AT %Q* : BOOL;
+	AckInspectionResults AT %Q* : BOOL;
+	SetUserData AT %Q* : BOOL;
+	ExecuteCommand AT %Q* : BOOL;
+	ClearError AT %Q* : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

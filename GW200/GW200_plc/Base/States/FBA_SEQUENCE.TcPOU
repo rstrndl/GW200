@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FBA_SEQUENCE" Id="{6b098270-d4d3-4b0a-9504-d01b905633b1}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FBA_SEQUENCE
+VAR_IN_OUT
+	AlarmRepository : FB_ALARM_REPOSITORY;
+END_VAR
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	Initialized : BOOL;
+END_VAR
+VAR
+	_state : FB_STATE_MACHINE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Initialize" Id="{106f4149-e459-4d74-a903-44f42b52a495}">
+      <Declaration><![CDATA[METHOD PUBLIC ABSTRACT Initialize : REFERENCE TO FBA_SEQUENCE
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{dd4033d9-8b93-4ae0-879e-4986000482ac}">
+      <Declaration><![CDATA[METHOD PUBLIC ABSTRACT Reset : REFERENCE TO FBA_SEQUENCE
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FBA_SEQUENCE">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FBA_SEQUENCE.Initialize">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FBA_SEQUENCE.Reset">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

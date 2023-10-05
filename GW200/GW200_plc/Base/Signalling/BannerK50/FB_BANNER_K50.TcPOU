@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_BANNER_K50" Id="{b592f749-083e-4cee-a196-8c700fdcbac2}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_BANNER_K50
+VAR_IN_OUT
+	Hardware : TYP_BAN_K50_HW;
+END_VAR
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	ButtonPressed : BOOL;
+	ButtonPosEdge : BOOL;
+	ButtonNegEdge : BOOL;
+END_VAR
+VAR
+	PosTrig : R_TRIG;
+	NegTrig : F_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ButtonPressed := Hardware.In.ButtonPressed;
+
+PosTrig(CLK := ButtonPressed, Q => ButtonPosEdge);
+NegTrig(CLK := ButtonPressed, Q => ButtonNegEdge);
+]]></ST>
+    </Implementation>
+    <Method Name="SetGreenLight" Id="{7cdfc9b8-e08c-445e-bf0e-fd5eaa830e18}">
+      <Declaration><![CDATA[METHOD PUBLIC SetGreenLight : REFERENCE TO FB_BANNER_K50
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+// Checking the VAR_IN_OUT reference, leave the current method in case of invalid reference
+IF NOT __ISVALIDREF(THIS^.Hardware) THEN
+     RETURN;
+END_IF
+
+THIS^.Hardware.Out.Green := TRUE;
+
+SetGreenLight REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetRedLight" Id="{ed435eff-65b3-4b2f-bfed-bf5eaa32a982}">
+      <Declaration><![CDATA[METHOD PUBLIC SetRedLight : REFERENCE TO FB_BANNER_K50
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+// Checking the VAR_IN_OUT reference, leave the current method in case of invalid reference
+IF NOT __ISVALIDREF(THIS^.Hardware) THEN
+     RETURN;
+END_IF
+
+
+THIS^.Hardware.Out.Red := TRUE;
+
+SetRedLight REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetYellowLight" Id="{c1222960-600c-44b0-be57-c6fe1f5ad668}">
+      <Declaration><![CDATA[METHOD PUBLIC SetYellowLight : REFERENCE TO FB_BANNER_K50
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+// Checking the VAR_IN_OUT reference, leave the current method in case of invalid reference
+IF NOT __ISVALIDREF(THIS^.Hardware) THEN
+     RETURN;
+END_IF
+
+
+THIS^.Hardware.Out.Yellow := TRUE;
+
+SetYellowLight REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TurnOffLights" Id="{e3bb478d-b2d0-46c4-85ce-bc36ab8e5820}">
+      <Declaration><![CDATA[METHOD PUBLIC TurnOffLights : REFERENCE TO FB_BANNER_K50
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+// Checking the VAR_IN_OUT reference, leave the current method in case of invalid reference
+IF NOT __ISVALIDREF(THIS^.Hardware) THEN
+     RETURN;
+END_IF
+
+
+THIS^.Hardware.Out.Green := FALSE;
+THIS^.Hardware.Out.Yellow := FALSE;
+THIS^.Hardware.Out.Red := FALSE;
+
+TurnOffLights REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_BANNER_K50">
+      <LineId Id="23" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="19" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BANNER_K50.SetGreenLight">
+      <LineId Id="18" Count="4" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BANNER_K50.SetRedLight">
+      <LineId Id="18" Count="5" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BANNER_K50.SetYellowLight">
+      <LineId Id="18" Count="5" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_BANNER_K50.TurnOffLights">
+      <LineId Id="15" Count="5" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="5" Count="2" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

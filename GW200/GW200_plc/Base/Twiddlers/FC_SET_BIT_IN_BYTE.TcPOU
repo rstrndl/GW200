@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FC_SET_BIT_IN_BYTE" Id="{fa8b4505-2d40-4dab-b30f-a7ff7c6c8df0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION FC_SET_BIT_IN_BYTE : BOOL
+VAR_INPUT
+	Value : BOOL;
+	RefByte : POINTER TO BYTE;
+	BitToSet : USINT;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE BitToSet OF
+	
+	0:
+		RefByte^.0 := Value;
+	1:
+		RefByte^.1 := Value;
+	2:
+		RefByte^.2 := Value;
+	3:
+		RefByte^.3 := Value;
+	4:
+		RefByte^.4 := Value;
+	5:
+		RefByte^.5 := Value;
+	6:	
+		RefByte^.6 := Value;
+	7:
+		RefByte^.7 := Value;
+		
+END_CASE;]]></ST>
+    </Implementation>
+    <LineIds Name="FC_SET_BIT_IN_BYTE">
+      <LineId Id="11" Count="18" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

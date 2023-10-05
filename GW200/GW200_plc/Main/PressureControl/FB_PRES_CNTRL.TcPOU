@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_PRES_CNTRL" Id="{59080cdc-8ddf-4030-bdc0-c24b6df0f728}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PRES_CNTRL
+VAR_INPUT
+
+END_VAR
+VAR_IN_OUT
+	Control : TYP_PRES_CNTRL_CONTROL;
+	Parameter: TYP_PRES_CNTRL_PARAMETER;
+END_VAR
+VAR_OUTPUT
+	Status : TYP_PRES_CNTRL_STATUS;
+END_VAR
+VAR
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <LineIds Name="FB_PRES_CNTRL">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_L4000_OPC_IN" Id="{cef132ee-338f-401e-bb70-e70f54a86415}">
+    <Declaration><![CDATA[TYPE TYP_HW_L4000_OPC_IN :
+STRUCT
+	Result AT %I* : ARRAY[1..43] OF REAL;
+	Online AT %I* : BOOL;
+	ActiveJob AT %I* : STRING;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

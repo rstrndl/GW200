@@ -1,0 +1,392 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_UR_PN" Id="{3f3fb21c-ea08-47cb-8376-6062bcbe025f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_UR_PN
+VAR_IN_OUT
+	Hardware : TYP_HW_UR_PN;
+END_VAR
+VAR
+	_pnIO : FB_UR_PN_IO;
+	_state : TYP_UR_PN_STATE;
+	_tcp : TYP_UR_PN_TCP;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_pnIO(Hardware := THIS^.Hardware);
+]]></ST>
+    </Implementation>
+    <Method Name="ReadBitRegister" Id="{220e270c-28a4-4000-b9dd-0f22233a1f1f}">
+      <Declaration><![CDATA[METHOD PUBLIC ReadBitRegister : BOOL
+VAR_INPUT
+	Register : USINT;
+END_VAR
+VAR
+	RegByte : USINT;
+	RegBit : USINT;
+	RefByte : BYTE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+	RegByte := DINT_TO_USINT(TRUNC(USINT_TO_REAL(Register) / 8.0));
+	RegBit := Register MOD 8;
+	
+	IF RegByte <= 7 THEN
+		RefByte := THIS^.Hardware.In.T2OURBitReg[RegByte];
+	END_IF;
+	
+	ReadBitRegister := FC_GET_BIT_IN_BYTE(BitToGet := RegBit, RefByte := ADR(RefByte));
+END_IF;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ReadFloatRegister" Id="{c11fa34a-aaa3-4cc0-b2d0-d592166cdf1a}">
+      <Declaration><![CDATA[METHOD PUBLIC ReadFloatRegister : REAL
+VAR_INPUT
+	Register : USINT;
+END_VAR
+VAR
+	RegByte : USINT;
+	PtrByte : POINTER TO BYTE;
+	ReturnReal : REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+	RegByte := Register * 4;
+	
+	IF RegByte <= 23 THEN
+		PtrByte := ADR(THIS^.Hardware.In.T2OURFloatReg[RegByte]);
+	END_IF;
+	
+	FC_FLIP_DWORD(In := PtrByte, Out := ADR(ReturnReal));
+	
+	ReadFloatRegister := ReturnReal;
+END_IF;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ReadIntRegister" Id="{4dd8e366-258f-4100-93b2-6d215e1da168}">
+      <Declaration><![CDATA[METHOD PUBLIC ReadIntRegister : DINT
+VAR_INPUT
+	Register : USINT;
+END_VAR
+VAR
+	RegByte : USINT;
+	PtrByte : POINTER TO BYTE;
+	ReturnDint : DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+	RegByte := 4 * Register;
+	
+	IF RegByte <= 23 THEN
+		PtrByte := ADR(THIS^.Hardware.In.T2OURIntReg[RegByte]);
+	END_IF;
+	
+	FC_FLIP_DWORD(In := PtrByte, Out := ADR(ReturnDint));
+	ReadIntRegister := ReturnDint;
+END_IF;
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="RobotIO" Id="{fa8e0c94-1bfc-4fb2-acc4-828e23707b00}">
+      <Declaration><![CDATA[PROPERTY PUBLIC RobotIO : REFERENCE TO FB_UR_PN_IO]]></Declaration>
+      <Get Name="Get" Id="{f6a9cedd-502e-46e6-9c4b-e60aac5b9e89}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[RobotIO REF= THIS^._pnIO;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="State" Id="{5d8c574e-8bd8-4230-ad8f-70cb194e3330}">
+      <Declaration><![CDATA[PROPERTY PUBLIC State : REFERENCE TO TYP_UR_PN_STATE]]></Declaration>
+      <Get Name="Get" Id="{780aa526-1857-4f47-bdd3-eb97a80dd9a1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+	_state.MajVersion := THIS^.Hardware.In.T2OURState[0];
+	_state.MinVersion := THIS^.Hardware.In.T2OURState[1];
+	_state.RobotMode := BYTE_TO_INT(THIS^.Hardware.In.T2OURState[4]);
+	_state.RTMs := THIS^.Hardware.In.T2OURState[5];
+	_state.RTMs := THIS^.Hardware.In.T2OURState[5];
+	_state.RTMm := THIS^.Hardware.In.T2OURState[8];
+	_state.RTMh := THIS^.Hardware.In.T2OURState[9];
+	FC_FLIP_WORD(In := ADR(THIS^.Hardware.In.T2OURState[6]), Out := ADR(_state.RTMms));
+	FC_FLIP_WORD(In := ADR(THIS^.Hardware.In.T2OURState[10]), Out := ADR(_state.RTMd));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURState[12]), Out := ADR(_state.RobotCurrent));
+	_state.Power := THIS^.Hardware.In.T2OURState[16].0;
+	_state.ProgramRunning := THIS^.Hardware.In.T2OURState[16].1;
+	_state.TeachButton := THIS^.Hardware.In.T2OURState[16].2;
+	_state.PowerButton := THIS^.Hardware.In.T2OURState[16].3;
+	_state.NormalMode := THIS^.Hardware.In.T2OURState[28].0;
+	_state.ReducedMode := THIS^.Hardware.In.T2OURState[28].1;
+	_state.ProtectiveStopped := THIS^.Hardware.In.T2OURState[28].2;
+	_state.RecoveryMode := THIS^.Hardware.In.T2OURState[28].3;
+	_state.SafeguardStop := THIS^.Hardware.In.T2OURState[28].4;
+	_state.SystemEmergencyStopped := THIS^.Hardware.In.T2OURState[28].5;
+	_state.RobotEmergencyStopped := THIS^.Hardware.In.T2OURState[28].6;
+	_state.EmergencyStopped := THIS^.Hardware.In.T2OURState[28].7;
+	_state.Violation := THIS^.Hardware.In.T2OURState[29].0;
+	_state.Faulted := THIS^.Hardware.In.T2OURState[29].1;
+	_state.SafetyStopped := THIS^.Hardware.In.T2OURState[29].2;
+END_IF;
+
+
+State REF= _state;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="TCP" Id="{f2d4be53-3284-49d4-8bce-ac4ef24f1e58}">
+      <Declaration><![CDATA[PROPERTY PUBLIC TCP : REFERENCE TO TYP_UR_PN_TCP]]></Declaration>
+      <Get Name="Get" Id="{9b20c71e-6377-4f87-8698-fe7c99652823}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[0]), Out := ADR(THIS^._tcp.Position.X));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[4]), Out := ADR(THIS^._tcp.Position.Y));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[8]), Out := ADR(THIS^._tcp.Position.Z));
+	
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[12]), Out := ADR(THIS^._tcp.PositionR.X));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[16]), Out := ADR(THIS^._tcp.PositionR.Y));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[20]), Out := ADR(THIS^._tcp.PositionR.Z));
+	
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[24]), Out := ADR(THIS^._tcp.Velocity.X));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[28]), Out := ADR(THIS^._tcp.Velocity.Y));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[32]), Out := ADR(THIS^._tcp.Velocity.Z));
+	
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[36]), Out := ADR(THIS^._tcp.VelocityR.X));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[40]), Out := ADR(THIS^._tcp.VelocityR.Y));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[44]), Out := ADR(THIS^._tcp.VelocityR.Z));
+	
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[48]), Out := ADR(THIS^._tcp.Force.X));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[52]), Out := ADR(THIS^._tcp.Force.Y));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[56]), Out := ADR(THIS^._tcp.Force.Z));
+	
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[60]), Out := ADR(THIS^._tcp.Torque.X));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[64]), Out := ADR(THIS^._tcp.Torque.Y));
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[68]), Out := ADR(THIS^._tcp.Torque.Z));
+	
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURTCP[72]), Out := ADR(THIS^._tcp.ForceScalar));
+END_IF;
+
+
+TCP REF= _tcp;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="WriteBitRegister" Id="{c42ed2c5-1d40-4540-8d2c-c7161bed6515}">
+      <Declaration><![CDATA[METHOD PUBLIC WriteBitRegister
+VAR_INPUT
+	Register : USINT;
+	Value : BOOL;
+END_VAR
+VAR
+	RegByte : USINT;
+	RegBit : USINT;
+	RefByte : REFERENCE TO BYTE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+	RegByte := DINT_TO_USINT(TRUNC(USINT_TO_REAL(Register) / 8.0));
+	RegBit := Register MOD 8;
+	
+	IF RegByte <= 3 THEN
+		RefByte REF= THIS^.Hardware.Out.O2TURGenReg1[RegByte];
+	ELSIF RegByte <= 7 THEN
+		RefByte REF= THIS^.Hardware.Out.O2TURGenReg2[RegByte-4];
+	END_IF;
+	
+	FC_SET_BIT_IN_BYTE(BitToSet := RegBit, RefByte := ADR(RefByte), Value := Value);
+END_IF;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteFloatRegister" Id="{8ccbc559-2d1b-4a35-b018-61d478675415}">
+      <Declaration><![CDATA[METHOD PUBLIC WriteFloatRegister
+VAR_INPUT
+	Register : USINT;
+	Value : REAL;
+END_VAR
+VAR
+	RegByte : USINT;
+	PtrByte : POINTER TO BYTE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+	RegByte := (Register MOD 12) * 4;
+	
+	IF Register <= 11 THEN
+		PtrByte := ADR(THIS^.Hardware.Out.O2TURGenReg1[RegByte + 52]);
+	ELSIF Register <= 23 THEN
+		PtrByte := ADR(THIS^.Hardware.Out.O2TURGenReg2[RegByte + 52]);
+	END_IF;
+	
+	FC_FLIP_DWORD(In := ADR(Value), Out := PtrByte);
+END_IF;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="WriteIntRegister" Id="{c23efd81-98c6-45be-be70-4dea11900247}">
+      <Declaration><![CDATA[METHOD PUBLIC WriteIntRegister
+VAR_INPUT
+	Register : USINT;
+	Value : DINT;
+END_VAR
+VAR
+	RegByte : USINT;
+	PtrByte : POINTER TO BYTE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+	RegByte := 4 + (4 * Register);
+	
+	IF RegByte <= 11 THEN
+		PtrByte := ADR(THIS^.Hardware.Out.O2TURGenReg1[RegByte]);
+	ELSIF RegByte <= 23 THEN
+		PtrByte := ADR(THIS^.Hardware.Out.O2TURGenReg2[RegByte]);
+	END_IF;
+	
+	FC_FLIP_DWORD(In := ADR(Value), PtrByte);
+END_IF;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_UR_PN">
+      <LineId Id="151" Count="0" />
+      <LineId Id="309" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN.ReadBitRegister">
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="21" Count="2" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN.ReadFloatRegister">
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="53" Count="1" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN.ReadIntRegister">
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="64" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN.RobotIO.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN.State.Get">
+      <LineId Id="5" Count="3" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="16" Count="2" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="19" Count="5" />
+      <LineId Id="30" Count="9" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN.TCP.Get">
+      <LineId Id="5" Count="2" />
+      <LineId Id="30" Count="5" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="42" Count="1" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="46" Count="1" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="50" Count="1" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="52" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN.WriteBitRegister">
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="21" Count="2" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN.WriteFloatRegister">
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN.WriteIntRegister">
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

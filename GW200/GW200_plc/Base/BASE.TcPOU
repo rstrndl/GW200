@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="BASE" Id="{ff08221e-1d32-4986-8602-1c09f6f84525}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM BASE
+VAR
+	DateTime : FB_DATETIME;
+	Strings : FB_STRINGS;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[DateTime();
+Strings();]]></ST>
+    </Implementation>
+    <LineIds Name="BASE">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

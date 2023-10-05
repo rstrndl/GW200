@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_PURGE_N2_PARAMETER" Id="{d4153ade-53f4-4660-822f-d17a33973c20}">
+    <Declaration><![CDATA[TYPE TYP_PURGE_N2_PARAMETER :
+STRUCT
+	NoPurge : INT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ALARM_INSTANCE" Id="{f2324f30-a80f-4c23-8c09-e438e4b22386}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_ALARM_INSTANCE
+VAR_INPUT
+	Alarm : REFERENCE TO FB_ALARM;
+	Config : TYP_ALARM_CONFIG;
+	State : E_ALARM_STATE;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_actDT : DT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="ActivationDateTime" Id="{59cdcf77-47e1-48f5-96e0-6a47bf93abf8}">
+      <Declaration><![CDATA[PROPERTY PUBLIC ActivationDateTime : DT]]></Declaration>
+      <Get Name="Get" Id="{435399f8-47a0-4a0a-bdb8-af5c45177d12}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ActivationDateTime := THIS^._actDT;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{220516a4-cd6b-4537-bfa3-e9ee37d2bc6e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._actDT :=	ActivationDateTime;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Update" Id="{9219cb9e-ce21-40c6-b89a-2ef5b3bb50f3}">
+      <Declaration><![CDATA[METHOD PUBLIC Update : REFERENCE TO FB_ALARM_INSTANCE
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF __ISVALIDREF(THIS^.Alarm) THEN
+	THIS^.State := THIS^.Alarm.State;
+END_IF;
+
+Update REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="VisuAlarm" Id="{9e1e590a-a8a3-4469-9592-122ee15f4e75}">
+      <Declaration><![CDATA[PROPERTY PUBLIC VisuAlarm : TYP_VISU_ALARM]]></Declaration>
+      <Get Name="Get" Id="{aff9b831-cdf2-4600-99d3-40ede29cd463}">
+        <Declaration><![CDATA[VAR
+	Alarm : TYP_VISU_ALARM;
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Alarm.Code := THIS^.Config.Code;
+Alarm.Priority := THIS^.Config.Priority;
+Alarm.Message := THIS^.Config.Name;
+Alarm.Name := THIS^.Config.Name;
+Alarm.Timestamp := THIS^.ActivationDateTime;
+Alarm.State := TO_STRING(THIS^.State);
+
+VisuAlarm := Alarm;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <LineIds Name="FB_ALARM_INSTANCE">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_INSTANCE.ActivationDateTime.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_INSTANCE.ActivationDateTime.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_INSTANCE.Update">
+      <LineId Id="11" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_INSTANCE.VisuAlarm.Get">
+      <LineId Id="2" Count="0" />
+      <LineId Id="6" Count="3" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

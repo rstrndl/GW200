@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_ALARM_ACK_TYPE" Id="{4e4f1b34-6c2d-41db-96d7-8d4a1dac64b3}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_ALARM_ACK_TYPE :
+(
+	ONLY_ACK := 0, // Alarm will clear only after acknowledgement, reset not necessary
+	ONLY_RESET := 1, // Alarm will clear only after reset, acknowledgement not necessary
+	ACK_AFTER_RESET := 2, // Alarm will clear if acknowledgement is done after reset
+	ACK_OR_RESET := 3, // Alarm will clear if reset or acknowledged, whichever comes first
+	ACK_AND_RESET := 4 // Alarm will clear if reset and acknowledged, order not important
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

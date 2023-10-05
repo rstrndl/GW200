@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_L4000_OPC" Id="{428d0126-98e5-4cf4-96f3-f093277a1e08}">
+    <Declaration><![CDATA[TYPE TYP_HW_L4000_OPC :
+STRUCT
+	LoadJob : TYP_HW_L4000_OPC_JOB_CHANGE;
+	In : TYP_HW_L4000_OPC_IN;
+	Out : TYP_HW_L4000_OPC_OUT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

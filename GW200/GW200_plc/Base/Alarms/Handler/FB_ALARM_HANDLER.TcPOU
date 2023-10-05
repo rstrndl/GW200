@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ALARM_HANDLER" Id="{6e6866db-2555-4b14-ad23-9aafadc1eed0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_ALARM_HANDLER EXTENDS FBA_ALARM_HANDLER
+VAR_IN_OUT
+	Repository : FBA_ALARM_HANDLER;
+END_VAR
+VAR_INPUT
+	Prefix : STRING;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="RegisterAlarm" Id="{c5b1e60a-b768-4a6b-805f-27263b19fdc9}">
+      <Declaration><![CDATA[METHOD RegisterAlarm : REFERENCE TO FBA_ALARM_HANDLER
+VAR_INPUT
+	Alarm	: REFERENCE TO FB_ALARM;
+	Prefix	: STRING := '';
+	Update : BOOL := TRUE;
+END_VAR
+VAR
+	TempString : STRING := '';
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+// Checking the VAR_IN_OUT reference, leave the current method in case of invalid reference
+IF NOT __ISVALIDREF(THIS^.Repository) THEN
+     RETURN;
+END_IF
+
+
+IF THIS^.Prefix <> '' THEN
+	TempString := CONCAT(THIS^.Prefix, '*');
+END_IF;
+
+TempString := CONCAT(TempString, Prefix);
+THIS^.Repository.RegisterAlarm(Alarm := Alarm, Prefix := TempString, Update := TRUE);
+
+RegisterAlarm REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_ALARM_HANDLER">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_HANDLER.RegisterAlarm">
+      <LineId Id="38" Count="5" />
+      <LineId Id="36" Count="1" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

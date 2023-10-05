@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_VISU_ALARM" Id="{f58a1952-b89b-402c-bee6-7be941987e94}">
+    <Declaration><![CDATA[TYPE TYP_VISU_ALARM :
+STRUCT
+	Timestamp : DT;
+	Name : STRING;
+	Message : STRING;
+	State : STRING;
+	Code : DINT;
+	Priority : INT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_PURGE_N2_CONTROL" Id="{31b2abbd-b13c-4556-93f9-0728c3dc85e2}">
+    <Declaration><![CDATA[TYPE TYP_PURGE_N2_CONTROL :
+STRUCT
+	Execute : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

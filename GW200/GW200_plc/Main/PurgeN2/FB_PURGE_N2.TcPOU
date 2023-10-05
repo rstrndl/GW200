@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_PURGE_N2" Id="{c118c864-925d-4c59-b80c-cc2c54f59f1f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PURGE_N2
+VAR_INPUT
+
+END_VAR
+VAR_IN_OUT
+	Control : TYP_PURGE_N2_CONTROL;
+	Parameter: TYP_PURGE_N2_PARAMETER;
+END_VAR
+VAR_OUTPUT
+	Status : TYP_PURGE_N2_STATUS;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Open valves
+//Start purging
+//Check if purging time reached
+//Repeat x times
+//Close valves
+//Done := TRUE]]></ST>
+    </Implementation>
+    <LineIds Name="FB_PURGE_N2">
+      <LineId Id="9" Count="0" />
+      <LineId Id="23" Count="2" />
+      <LineId Id="27" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

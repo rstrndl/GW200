@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_L4000_ACQ_STATUS" Id="{8f17e89e-3aa7-44a5-93b2-02e0fe92676e}">
+    <Declaration><![CDATA[TYPE TYP_HW_L4000_ACQ_STATUS :
+STRUCT
+	AcqTriggerReady AT %I* : BOOL;
+	AcqTriggerAcknowledge AT %I* : BOOL;
+	ExposureComplete AT %I* : BOOL;
+	AcqError AT %I* : BOOL;
+	Paused AT %I* : BOOL;
+	Online AT %I* : BOOL;
+	AcqID AT %I* : UINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

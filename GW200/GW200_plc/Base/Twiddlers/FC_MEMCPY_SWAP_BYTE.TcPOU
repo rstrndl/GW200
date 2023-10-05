@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FC_MEMCPY_SWAP_BYTE" Id="{41ef9884-5a2d-47a1-9860-f0ec2fb6ed20}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION FC_MEMCPY_SWAP_BYTE : BOOL
+VAR_IN_OUT
+	Source : ARRAY[*] OF BYTE;
+END_VAR
+VAR_INPUT
+	Dest : POINTER TO BYTE;
+END_VAR
+VAR
+	ArrLen : UDINT;
+	NewArray : POINTER TO BYTE;
+	i : DINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ArrLen := DINT_TO_UDINT((UPPER_BOUND(Source,1) - LOWER_BOUND(Source,1)) + 1);
+
+NewArray := __NEW(BYTE, ArrLen);
+
+FOR i := LOWER_BOUND(Source,1) TO UPPER_BOUND(Source,1) BY 2 DO
+	IF i < UPPER_BOUND(Source,1) THEN
+		NewArray[i] := Source[i + 1];
+		NewArray[i + 1] := Source[i];
+	ELSE
+		NewArray[i] := Source[i];
+	END_IF;
+END_FOR;
+
+MEMCPY(Dest, NewArray, ArrLen);
+
+__DELETE(NewArray);
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="FC_MEMCPY_SWAP_BYTE">
+      <LineId Id="50" Count="16" />
+      <LineId Id="32" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

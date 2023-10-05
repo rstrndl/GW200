@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_VALVE_TIMEOUT_ALARM_CONF" Id="{0cdb8557-557b-4de7-91ba-78d41ba649b0}">
+    <Declaration><![CDATA[TYPE TYP_VALVE_TIMEOUT_ALARM_CONF :
+STRUCT
+	Enable : BOOL := TRUE; // Alarm enabled
+	Delay : TIME := T#10S; // Delay before alarm is activated
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

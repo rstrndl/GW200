@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_L4000_INSP_STATUS" Id="{287b5bfb-7685-4faa-a758-bbeac2efd021}">
+    <Declaration><![CDATA[TYPE TYP_HW_L4000_INSP_STATUS :
+STRUCT
+	SystemReady AT %I* : BOOL;
+	InspectionCompleted AT %I* : BOOL;
+	ResultsBufferOverrun AT %I* : BOOL;
+	ResultsValid AT %I* : BOOL;
+	CommandExecuting AT %I* : BOOL;
+	CommandCompleted AT %I* : BOOL;
+	CommandFailed AT %I* : BOOL;
+	SetUserDataAcknowledge AT %I* : BOOL;
+	ResultsPassed AT %I* : BOOL;
+	Error AT %I* : BOOL;
+	ErrorID AT %I* : UINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

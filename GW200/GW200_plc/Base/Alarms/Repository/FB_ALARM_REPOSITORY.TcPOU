@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ALARM_REPOSITORY" Id="{8676ede6-3e79-4e90-99da-9cec6d256980}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_ALARM_REPOSITORY EXTENDS FBA_ALARM_HANDLER;
+VAR_IN_OUT
+	Alarms : ARRAY[*] OF FB_ALARM_INSTANCE;
+	VisuAlarms : ARRAY[*] OF TYP_VISU_ALARM;
+END_VAR
+VAR_INPUT
+	AcknowledgeAll : BOOL;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF AcknowledgeAll THEN
+	THIS^._acknowledgeAll();
+	AcknowledgeAll := FALSE;
+END_IF;]]></ST>
+    </Implementation>
+    <Folder Name="Private" Id="{5c358605-9a8d-413f-9f94-9c8968d1a428}" />
+    <Method Name="_acknowledgeAll" Id="{404ab893-9e74-48c0-b4cb-4b13dca5f510}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE _acknowledgeAll;
+VAR
+	i: DINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:= LOWER_BOUND(THIS^.Alarms, 1) TO UPPER_BOUND(THIS^.Alarms, 1) DO
+	IF __ISVALIDREF(THIS^.Alarms[i].Alarm) THEN
+		THIS^.Alarms[i].Alarm.AcknowledgeNoUpdate();
+	END_IF;
+END_FOR;
+
+THIS^.UpdateAlarms().SortAlarms().PopulateVisuAlarms();]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ActiveAlarms" Id="{20467f7d-eb31-4709-9156-c82b913301c5}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY PUBLIC ActiveAlarms : USINT]]></Declaration>
+      <Get Name="Get" Id="{e4ae67a5-6073-464a-a4e5-a7e0f69f6e6f}">
+        <Declaration><![CDATA[VAR
+	i : DINT;
+	cnt : DINT;
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[cnt := 0;
+
+FOR i:= LOWER_BOUND(THIS^.VisuAlarms, 1) TO UPPER_BOUND(THIS^.VisuAlarms, 1) DO
+	IF THIS^.VisuAlarms[i].State <> 'INACTIVE' THEN
+		cnt := cnt + 1;
+	END_IF
+END_FOR;
+
+ActiveAlarms := DINT_TO_USINT(cnt);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="AddAlarm" Id="{4c001f26-ffb0-4a1d-938e-aad0d0cc88aa}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE AddAlarm : REFERENCE TO FB_ALARM_REPOSITORY
+VAR_INPUT
+	AlarmInstance : FB_ALARM_INSTANCE;
+END_VAR
+VAR
+	i : DINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:= LOWER_BOUND(THIS^.Alarms, 1) TO UPPER_BOUND(THIS^.Alarms, 1) DO
+	IF NOT __ISVALIDREF(THIS^.Alarms[i].Alarm) THEN
+		THIS^.Alarms[i] := AlarmInstance;
+		EXIT;
+	END_IF;
+END_FOR;
+
+AddAlarm REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CreateAlarmInstance" Id="{b91e1fab-4144-4b78-8a96-430a7ebfcdf7}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE CreateAlarmInstance : FB_ALARM_INSTANCE
+VAR_INPUT
+	Alarm : REFERENCE TO FB_ALARM;
+	Prefix : STRING;
+END_VAR
+VAR
+	AlarmInstance : FB_ALARM_INSTANCE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AlarmInstance.Alarm REF= Alarm;
+AlarmInstance.ActivationDateTime := BASE.DateTime.GetCurrentDateTime();
+AlarmInstance.Config := Alarm.Config;
+AlarmInstance.Config.Name := CONCAT(Prefix, Alarm.Config.Name);
+AlarmInstance.State := Alarm.State;
+
+CreateAlarmInstance := AlarmInstance;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="IsAlarmPresent" Id="{a7066ec3-f472-4cb1-92cf-102805ec5e2b}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE IsAlarmPresent : BOOL
+VAR_INPUT
+	Alarm : REFERENCE TO FB_ALARM;
+END_VAR
+VAR
+	i : DINT;
+	lwr : DINT;
+	upr : DINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IsAlarmPresent := FALSE;
+
+lwr := LOWER_BOUND(THIS^.Alarms, 1);
+upr := UPPER_BOUND(THIS^.Alarms, 1);
+FOR i:= lwr TO upr DO
+	IF ADR(THIS^.Alarms[i].Alarm) = ADR(Alarm) AND __ISVALIDREF(THIS^.Alarms[i].Alarm) THEN
+		IsAlarmPresent := TRUE;
+		EXIT;
+	END_IF;
+END_FOR;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="NullAlarmInstance" Id="{7e6e4c46-f4b6-462b-bc96-be48546cee44}" FolderPath="Private\">
+      <Declaration><![CDATA[PROPERTY PROTECTED NullAlarmInstance : FB_ALARM_INSTANCE]]></Declaration>
+      <Get Name="Get" Id="{df8defbd-0677-40ab-9432-d484f534fdbb}">
+        <Declaration><![CDATA[VAR
+	AlarmInstance : FB_ALARM_INSTANCE;
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[AlarmInstance.ActivationDateTime := DWORD_TO_DT(0);
+
+AlarmInstance.Alarm REF= 0;
+
+AlarmInstance.Config.Acknowledge := E_ALARM_ACK_TYPE.ONLY_ACK;
+AlarmInstance.Config.Code := 0;
+AlarmInstance.Config.MultiInstance := FALSE;
+AlarmInstance.Config.Name := '';
+AlarmInstance.Config.Priority := 0;
+
+AlarmInstance.State := E_ALARM_STATE.INACTIVE;
+
+NullAlarmInstance := AlarmInstance;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="PopulateVisuAlarms" Id="{90deb721-6d1d-4959-b3c9-7ccbe30db4c4}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE PopulateVisuAlarms : REFERENCE TO FB_ALARM_REPOSITORY
+VAR_INPUT
+END_VAR
+
+VAR
+	i: DINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:= LOWER_BOUND(THIS^.Alarms, 1) TO UPPER_BOUND(THIS^.Alarms, 1) DO
+	IF i >= LOWER_BOUND(THIS^.VisuAlarms, 1) AND i <= UPPER_BOUND(THIS^.VisuAlarms, 1) THEN
+		THIS^.VisuAlarms[i] := THIS^.Alarms[i].VisuAlarm;
+	END_IF;
+END_FOR;
+
+PopulateVisuAlarms REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RegisterAlarm" Id="{8ffeaa48-80bf-4136-b098-dc30e5ce5536}">
+      <Declaration><![CDATA[METHOD RegisterAlarm : REFERENCE TO FBA_ALARM_HANDLER
+VAR_INPUT
+	Alarm	: REFERENCE TO FB_ALARM;
+	Prefix	: STRING := '';
+	Update : BOOL;
+END_VAR
+
+VAR
+	i: DINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT THIS^.IsAlarmPresent(Alarm := Alarm) OR (Alarm.Config.MultiInstance AND Alarm.State = E_ALARM_STATE.ACTIVE_UNACK) THEN
+	THIS^.AddAlarm(AlarmInstance := THIS^.CreateAlarmInstance(Alarm := Alarm, Prefix := Prefix));
+END_IF;
+
+IF Update THEN
+	THIS^.UpdateAlarms().SortAlarms().PopulateVisuAlarms();
+END_IF;
+
+RegisterAlarm REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SortAlarms" Id="{a31ae0cf-175f-4cfb-9434-3d28f3c187f9}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE SortAlarms : REFERENCE TO FB_ALARM_REPOSITORY
+VAR_INPUT
+END_VAR
+
+VAR
+	i: DINT;
+	j: DINT;
+	Found : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:= LOWER_BOUND(THIS^.Alarms, 1) TO UPPER_BOUND(THIS^.Alarms, 1) DO
+	IF NOT __ISVALIDREF(THIS^.Alarms[i].Alarm) THEN
+		Found := FALSE;
+		FOR j:= i TO UPPER_BOUND(THIS^.Alarms, 1) DO
+			IF __ISVALIDREF(THIS^.Alarms[j].Alarm) THEN
+				THIS^.Alarms[i] := THIS^.Alarms[j];
+				THIS^.Alarms[j] := THIS^.NullAlarmInstance;
+				Found := TRUE;
+				EXIT;
+			END_IF;
+		END_FOR;
+		IF NOT Found THEN
+			EXIT;
+		END_IF;
+	END_IF;
+END_FOR;
+
+SortAlarms REF= THIS^;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="UpdateAlarms" Id="{5ed13c68-3b9c-462e-832b-84becedb7579}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PRIVATE UpdateAlarms : REFERENCE TO FB_ALARM_REPOSITORY
+VAR_INPUT
+END_VAR
+
+VAR
+	i: DINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:= LOWER_BOUND(THIS^.Alarms, 1) TO UPPER_BOUND(THIS^.Alarms, 1) DO
+	THIS^.Alarms[i].Update();
+	
+	IF THIS^.Alarms[i].State <> E_ALARM_STATE.ACTIVE_ACK AND THIS^.Alarms[i].State <> E_ALARM_STATE.ACTIVE_UNACK AND THIS^.Alarms[i].State <> E_ALARM_STATE.INACTIVE_UNACK THEN
+		THIS^.Alarms[i] := THIS^.NullAlarmInstance;
+	END_IF;
+END_FOR;
+
+UpdateAlarms REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_ALARM_REPOSITORY">
+      <LineId Id="9" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="23" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_REPOSITORY._acknowledgeAll">
+      <LineId Id="6" Count="0" />
+      <LineId Id="21" Count="2" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_REPOSITORY.ActiveAlarms.Get">
+      <LineId Id="14" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_REPOSITORY.AddAlarm">
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="23" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_REPOSITORY.CreateAlarmInstance">
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="1" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_REPOSITORY.IsAlarmPresent">
+      <LineId Id="14" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_REPOSITORY.NullAlarmInstance.Get">
+      <LineId Id="2" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="7" Count="1" />
+      <LineId Id="11" Count="2" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_REPOSITORY.PopulateVisuAlarms">
+      <LineId Id="6" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="41" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="49" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_REPOSITORY.RegisterAlarm">
+      <LineId Id="71" Count="0" />
+      <LineId Id="73" Count="1" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_REPOSITORY.SortAlarms">
+      <LineId Id="6" Count="1" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="24" Count="2" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="37" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ALARM_REPOSITORY.UpdateAlarms">
+      <LineId Id="6" Count="1" />
+      <LineId Id="13" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

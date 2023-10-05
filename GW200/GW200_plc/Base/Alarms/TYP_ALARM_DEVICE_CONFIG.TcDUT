@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_ALARM_DEVICE_CONFIG" Id="{cd00d540-27a1-4eb4-960e-869cca3352d6}">
+    <Declaration><![CDATA[TYPE TYP_ALARM_DEVICE_CONFIG :
+STRUCT
+	Name : STRING;
+	Handler : REFERENCE TO FB_ALARM_HANDLER;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

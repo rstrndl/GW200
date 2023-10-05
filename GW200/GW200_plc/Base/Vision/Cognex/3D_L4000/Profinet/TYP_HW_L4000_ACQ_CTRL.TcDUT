@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_L4000_ACQ_CTRL" Id="{3664c6ce-cb64-4378-8977-0592474978aa}">
+    <Declaration><![CDATA[TYPE TYP_HW_L4000_ACQ_CTRL :
+STRUCT
+	AcqTriggerEnable AT %Q* : BOOL;
+	AcqTrigger AT %Q* : BOOL;
+	ClearExposureComplete AT %Q* : BOOL;
+	SetPauseOfOnline AT %Q* : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

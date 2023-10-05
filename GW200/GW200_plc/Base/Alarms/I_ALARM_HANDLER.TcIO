@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_ALARM_HANDLER" Id="{5c994d0e-8085-4560-9226-945aa16ffed2}">
+    <Declaration><![CDATA[INTERFACE I_ALARM_HANDLER
+]]></Declaration>
+    <Method Name="RegisterAlarm" Id="{3356dcaa-b4e3-4ea5-ac44-9fb7255bfd66}">
+      <Declaration><![CDATA[METHOD RegisterAlarm : REFERENCE TO FBA_ALARM_HANDLER
+VAR_INPUT
+	Alarm : REFERENCE TO FB_ALARM;
+	Prefix : STRING := '';
+	Update : BOOL := TRUE;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

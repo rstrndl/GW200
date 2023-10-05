@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SEQUENCE_VISU" Id="{2f0b4f67-91b5-4572-ba66-bc8ca4eb2cf6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_SEQUENCE_VISU
+VAR_IN_OUT
+	Sequence : FBA_SEQUENCE;
+END_VAR
+VAR_INPUT
+	Start : BOOL;
+	Stop : BOOL;
+	Reset : BOOL;
+	Initialize : BOOL;
+	HmiState : STRING;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF Initialize THEN
+	Sequence.Initialize();
+	Initialize := FALSE;
+END_IF;
+
+IF Reset THEN
+	Sequence.Reset();
+	Reset := FALSE;
+END_IF;
+
+IF Start THEN
+	Sequence._state.Start();
+	Start := FALSE;
+END_IF;
+
+IF Stop THEN
+	Sequence._state.Stop();
+	Stop := FALSE;
+END_IF;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_SEQUENCE_VISU">
+      <LineId Id="18" Count="17" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

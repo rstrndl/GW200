@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_DEPRAG_AST11_HW" Id="{06b3db77-625a-4410-b356-196de444312a}">
+    <Declaration><![CDATA[TYPE TYP_DEPRAG_AST11_HW :
+STRUCT
+	In : TYP_DEPRAG_AST11_HW_IN;
+	Out : TYP_DEPRAG_AST11_HW_OUT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

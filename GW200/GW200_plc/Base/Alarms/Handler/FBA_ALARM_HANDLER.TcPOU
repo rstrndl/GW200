@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FBA_ALARM_HANDLER" Id="{28e66e4a-40c9-42c1-ba15-4030d16dee0b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC ABSTRACT FBA_ALARM_HANDLER IMPLEMENTS I_ALARM_HANDLER
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="RegisterAlarm" Id="{ea224343-dc7b-4190-8929-085d23df7ce9}">
+      <Declaration><![CDATA[METHOD ABSTRACT RegisterAlarm : REFERENCE TO FBA_ALARM_HANDLER
+VAR_INPUT
+	Alarm	: REFERENCE TO FB_ALARM;
+	Prefix	: STRING := '';
+	Update : BOOL := TRUE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FBA_ALARM_HANDLER">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FBA_ALARM_HANDLER.RegisterAlarm">
+      <LineId Id="8" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

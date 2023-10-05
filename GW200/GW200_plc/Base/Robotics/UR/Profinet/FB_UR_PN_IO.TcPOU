@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_UR_PN_IO" Id="{539fe447-43b6-4c68-a860-e0e38ba41bc7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_UR_PN_IO
+VAR_IN_OUT
+	Hardware : TYP_HW_UR_PN;
+END_VAR
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_speedSlider : REAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Future versions should include digital and analog IO too, wasn't necessary in this application
+
+IF THIS^.Hardware.Out.O2TURIO[0].0 THEN // Speed slider mask to false when written
+	IF _speedSlider = THIS^.SpeedSlider THEN
+		THIS^.Hardware.Out.O2TURIO[0].0 := FALSE; 
+	END_IF;
+END_IF;]]></ST>
+    </Implementation>
+    <Property Name="PumpVoltage" Id="{31b5347a-947f-49eb-8112-982d3689c3ba}">
+      <Declaration><![CDATA[PROPERTY PUBLIC PumpVoltage : REAL]]></Declaration>
+      <Get Name="Get" Id="{6896f5b8-1d0c-422b-aea8-77e7fcb0db3c}">
+        <Declaration><![CDATA[VAR
+	TempReal: REAL;
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURIO[16]), Out := ADR(TempReal));
+	PumpVoltage := TempReal;
+	
+END_IF;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="SpeedSlider" Id="{283e5a7f-0140-4689-8d08-35fe883aa469}">
+      <Declaration><![CDATA[PROPERTY PUBLIC SpeedSlider : REAL]]></Declaration>
+      <Get Name="Get" Id="{40d964fa-1e9f-426e-88dd-8a7d1b03f4e5}">
+        <Declaration><![CDATA[VAR
+	TempReal : REAL;
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+
+	FC_FLIP_DWORD(In := ADR(THIS^.Hardware.In.T2OURState[20]), Out := ADR(TempReal));
+	SpeedSlider := TempReal;
+	
+END_IF;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{49f6c1d4-970e-44b6-b56a-36d7631cc0fd}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[{warning disable C0371}
+
+IF __ISVALIDREF(THIS^.Hardware) THEN
+
+	IF NOT THIS^.Hardware.Out.O2TURIO[0].0 THEN // Speed slider mask
+		FC_FLIP_DWORD(In := ADR(SpeedSlider), Out := ADR(THIS^.Hardware.Out.O2TURIO[4]));
+		_speedSlider := SpeedSlider;
+		THIS^.Hardware.Out.O2TURIO[0].0 := TRUE; 
+	END_IF
+	
+END_IF;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <LineIds Name="FB_UR_PN_IO">
+      <LineId Id="45" Count="5" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN_IO.PumpVoltage.Get">
+      <LineId Id="5" Count="6" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN_IO.SpeedSlider.Get">
+      <LineId Id="10" Count="1" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="12" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_UR_PN_IO.SpeedSlider.Set">
+      <LineId Id="11" Count="2" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

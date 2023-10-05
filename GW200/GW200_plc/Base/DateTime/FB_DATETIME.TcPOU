@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_DATETIME" Id="{c45fc1db-f5ef-46e9-83f3-709ac35ac1a8}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_DATETIME
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="GetCurrentDateTime" Id="{a443d8eb-2ec5-4fa1-887d-ccfaf4d9e3a8}">
+      <Declaration><![CDATA[METHOD PUBLIC GetCurrentDateTime : DT
+VAR_INPUT
+END_VAR
+VAR
+	SystemTime    : GETSYSTEMTIME;
+	timeAsFileTime  : T_FILETIME;
+	timeAsDT        : DT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SystemTime( timeLoDW =>timeAsFileTime.dwLowDateTime , timeHiDW =>timeAsFileTime.dwHighDateTime );
+GetCurrentDateTime := FILETIME_TO_DT( timeAsFileTime );]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetTimeDiff" Id="{a91b3ef1-003e-431e-a9e9-71c26a60e592}">
+      <Declaration><![CDATA[METHOD PUBLIC GetTimeDiff : TIME
+VAR_INPUT
+	In1 : TIME;
+	In2 : TIME;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetTimeDiff := In2 - In1;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetTimeSince" Id="{97f2aa0c-de9a-4816-bae2-a100c339d20e}">
+      <Declaration><![CDATA[METHOD PUBLIC GetTimeSince : TIME
+VAR_INPUT
+	In : TIME;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetTimeSince := TIME() - In;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_DATETIME">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DATETIME.GetCurrentDateTime">
+      <LineId Id="11" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DATETIME.GetTimeDiff">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DATETIME.GetTimeSince">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

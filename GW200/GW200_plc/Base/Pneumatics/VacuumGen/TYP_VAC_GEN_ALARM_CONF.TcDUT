@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_VAC_GEN_ALARM_CONF" Id="{98ddcb93-4b62-4644-9522-e3d3d94d8ceb}">
+    <Declaration><![CDATA[TYPE TYP_VAC_GEN_ALARM_CONF :
+STRUCT
+	Enable : BOOL := TRUE;
+	Timeout : TIME := T#4S;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

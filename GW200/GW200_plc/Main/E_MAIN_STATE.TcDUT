@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_MAIN_STATE" Id="{eacaa010-3e1a-4142-b305-84c7600c614d}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_MAIN_STATE :
+(
+	NULL := 0,
+	IDLE,
+	COLD_START,
+	HOT_START,
+	SHUT_DOWN,
+	PRODUCTION,
+	HOT_STANDBY,
+	COLD_STANDBY
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

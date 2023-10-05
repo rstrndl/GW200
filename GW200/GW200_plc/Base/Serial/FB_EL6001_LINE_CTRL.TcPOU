@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_EL6001_LINE_CTRL" Id="{df7462e1-ad58-4b3e-bdae-a9ae649e5322}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EL6001_LINE_CTRL
+VAR_IN_OUT
+	EL6001 : TYP_HW_EL6001;
+
+END_VAR
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	SerialLineControl : SerialLineControl;
+	Buffer : TYP_SERIAL_DATA;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SerialLineControl.Mode := ComSerialLineMode_t.SERIALLINEMODE_EL6_22B;
+SerialLineControl.pComIn := ADR(EL6001.In.COM);
+SerialLineControl.pComOut := ADR(EL6001.Out.COM);
+SerialLineControl.SizeComIn := UINT_TO_INT(SIZEOF(EL6001.In.COM));
+SerialLineControl(RxBuffer := Buffer.RxData, TxBuffer := Buffer.TxData);]]></ST>
+    </Implementation>
+    <Property Name="RxBuffer" Id="{4b2e2131-5397-484a-99cc-f0bca36fa536}">
+      <Declaration><![CDATA[PROPERTY PUBLIC RxBuffer : REFERENCE TO COMbuffer]]></Declaration>
+      <Get Name="Get" Id="{04f4a679-9ff6-402c-840c-d3416344bc22}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[RxBuffer REF= THIS^.Buffer.RxData;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="TxBuffer" Id="{85ebcbad-5070-451a-8656-dcd393a6893f}">
+      <Declaration><![CDATA[PROPERTY PUBLIC TxBuffer : REFERENCE TO COMbuffer]]></Declaration>
+      <Get Name="Get" Id="{3a754f51-453e-4e1c-a9b4-e9bca9a59081}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[TxBuffer REF= THIS^.Buffer.TxData;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <LineIds Name="FB_EL6001_LINE_CTRL">
+      <LineId Id="13" Count="3" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_EL6001_LINE_CTRL.RxBuffer.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_EL6001_LINE_CTRL.TxBuffer.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

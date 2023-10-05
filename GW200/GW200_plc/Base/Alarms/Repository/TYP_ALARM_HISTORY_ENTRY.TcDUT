@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_ALARM_HISTORY_ENTRY" Id="{ffd98be1-0290-4cde-851c-14a233c95d34}">
+    <Declaration><![CDATA[TYPE TYP_ALARM_HISTORY_ENTRY :
+STRUCT
+	Timestamp : DT;
+	Name : STRING;
+	Message : STRING;
+	PreviousState : STRING;
+	NewState : STRING;
+	Code : DINT;
+	Priority : INT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

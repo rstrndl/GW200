@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_L4000_OPC_JOB_CHANGE_IN" Id="{356711b8-5d8d-4e13-a454-4fc43009ac4a}">
+    <Declaration><![CDATA[TYPE TYP_HW_L4000_OPC_JOB_CHANGE_IN :
+STRUCT
+	ErrorID AT %I* : DINT;
+	Done AT %I* : BOOL;
+	Busy AT %I* : BOOL;
+	Error AT %I* : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

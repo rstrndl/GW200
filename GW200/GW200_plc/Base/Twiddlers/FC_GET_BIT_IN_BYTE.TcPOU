@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FC_GET_BIT_IN_BYTE" Id="{61fa9d43-2286-4edd-8490-c60101ac14a6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION FC_GET_BIT_IN_BYTE : BOOL
+VAR_INPUT
+	RefByte : POINTER TO BYTE;
+	BitToGet : USINT;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE BitToGet OF
+	
+	0:
+		FC_GET_BIT_IN_BYTE := BIT_TO_BOOL(RefByte^.0);
+	1:
+		FC_GET_BIT_IN_BYTE := BIT_TO_BOOL(RefByte^.1);
+	2:
+		FC_GET_BIT_IN_BYTE := BIT_TO_BOOL(RefByte^.2);
+	3:
+		FC_GET_BIT_IN_BYTE := BIT_TO_BOOL(RefByte^.3);
+	4:
+		FC_GET_BIT_IN_BYTE := BIT_TO_BOOL(RefByte^.4);
+	5:
+		FC_GET_BIT_IN_BYTE := BIT_TO_BOOL(RefByte^.5);
+	6:	
+		FC_GET_BIT_IN_BYTE := BIT_TO_BOOL(RefByte^.6);
+	7:
+		FC_GET_BIT_IN_BYTE := BIT_TO_BOOL(RefByte^.7);
+		
+END_CASE;]]></ST>
+    </Implementation>
+    <LineIds Name="FC_GET_BIT_IN_BYTE">
+      <LineId Id="11" Count="18" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

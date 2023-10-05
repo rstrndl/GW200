@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_VALVE_53_CTRL" Id="{9f59a496-6ef8-49d0-963a-e5a9aa5a9a8e}">
+    <Declaration><![CDATA[TYPE TYP_VALVE_53_CTRL :
+STRUCT
+	Enable : BOOL := TRUE; (* Enable movement in auto mode *)
+	EnableHP : BOOL := TRUE; (* Allow movement to HP *)
+	EnableWP : BOOL := TRUE; (* Allow movement to WP *)
+	ServiceEnable : BOOL; (* Enable movement in Service Mode NB!! This ignores all other enable/disable commands *)
+	ServiceHP : BOOL; (* Command movement to Home Position NB!! This ignores all other enable/disable commands *)
+	ServiceWP : BOOL; (* Command movement to Wome Position NB!! This ignores all other enable/disable commands *)
+	BlockOutputs : BOOL; // Do not allow to switch outputs
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

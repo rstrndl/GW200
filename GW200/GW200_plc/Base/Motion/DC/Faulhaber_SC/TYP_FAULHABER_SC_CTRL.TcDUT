@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_FAULHABER_SC_CTRL" Id="{50fa07c9-9391-4f1b-b4e0-3c76db6a91f4}">
+    <Declaration><![CDATA[TYPE TYP_FAULHABER_SC_CTRL :
+STRUCT	
+	Enable : BOOL; // Enable action
+	Run : BOOL; // Run motor
+	Speed : INT; // Setpoint speed
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

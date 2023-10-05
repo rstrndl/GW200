@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_VAC_GEN" Id="{b1869338-79d5-4ea3-ac76-0e830783f544}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_VAC_GEN
+VAR_IN_OUT
+	Hardware : TYP_VAC_GEN_HW;
+END_VAR
+VAR_INPUT
+	Control : TYP_VAC_GEN_CTRL;
+	Config : TYP_VAC_GEN_CONF;
+	AlarmConfig : TYP_ALARM_DEVICE_CONFIG;
+END_VAR
+VAR_OUTPUT
+	Status : TYP_VAC_GEN_STATUS;
+END_VAR
+VAR
+	CmdActivate : BOOL;
+	CmdRelease : BOOL;
+	VacAlarm : FB_ALARM;
+	VacAlarmTime : TON;
+	VacAlarmEdge : R_TRIG;
+	ServiceEdge : R_TRIG;
+	ReleaseTime : TIME;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[VacAlarm.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
+VacAlarm.Config.Name := CONCAT(AlarmConfig.Name, '*NO_VAC');
+VacAlarm(Handler := AlarmConfig.Handler);
+VacAlarmTime(IN := CmdActivate AND NOT Status.ReachedVac, PT := Config.Alarm.Timeout);
+VacAlarmEdge(CLK := VacAlarmTime.Q);
+
+IF VacAlarmEdge.Q AND Config.Alarm.Enable THEN
+	VacAlarm.Activate();
+END_IF;
+
+IF NOT CmdActivate AND VacAlarm.IsActive THEN
+	VacAlarm.Reset();
+END_IF;
+
+ServiceEdge(CLK := Control.ServiceEnable);
+
+IF ServiceEdge.Q THEN // Remember command when entering service mode to avoid unpredictable movements
+	Control.ServiceActivate := CmdActivate;
+	Control.ServiceRelease := CmdRelease;
+END_IF;
+
+IF Control.ServiceEnable THEN
+	CmdActivate := Control.ServiceActivate;
+	CmdRelease := Control.ServiceRelease;
+END_IF;
+
+Hardware.Out.EnableVac := CmdActivate;
+Hardware.Out.ReleaseVac := CmdRelease;
+
+Status.ReachedVac := Hardware.In.ReachedVac;
+Status.Error := VacAlarm.IsActive;
+
+IF NOT Control.ServiceEnable THEN
+	IF Status.ReachedVac AND NOT Config.Permanent THEN
+		Hardware.Out.EnableVac := FALSE;
+	END_IF;
+	
+	IF CmdRelease AND TIME() - ReleaseTime > T#1S THEN
+		CmdRelease := FALSE;
+	END_IF;
+END_IF;]]></ST>
+    </Implementation>
+    <Method Name="Activate" Id="{d68b21ec-e267-49c3-86f3-e067eb1056b1}">
+      <Declaration><![CDATA[METHOD PUBLIC Activate : REFERENCE TO FB_VAC_GEN
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.Control.Enable AND THIS^.Control.EnableActivate THEN
+	CmdActivate := TRUE;
+	CmdRelease := FALSE;
+END_IF;
+
+Activate REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Release" Id="{fe7bb3ce-673c-425c-8892-7a43e04fdf9a}">
+      <Declaration><![CDATA[METHOD PUBLIC Release : REFERENCE TO FB_VAC_GEN
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF THIS^.Control.Enable AND THIS^.Control.EnableRelease THEN
+	CmdActivate := FALSE;
+	CmdRelease := TRUE;
+	ReleaseTime := TIME();
+END_IF;
+
+Release REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{d7e120fa-93bd-42da-be10-337805f1d266}">
+      <Declaration><![CDATA[METHOD PUBLIC Reset : REFERENCE TO FB_VAC_GEN
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+CmdActivate := FALSE;
+CmdRelease := FALSE;
+
+
+Reset REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_VAC_GEN">
+      <LineId Id="9" Count="0" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="118" Count="1" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="121" Count="0" />
+      <LineId Id="123" Count="1" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="40" Count="3" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="61" Count="1" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="91" Count="1" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="60" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_VAC_GEN.Activate">
+      <LineId Id="6" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_VAC_GEN.Release">
+      <LineId Id="6" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_VAC_GEN.Reset">
+      <LineId Id="6" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="7" Count="2" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

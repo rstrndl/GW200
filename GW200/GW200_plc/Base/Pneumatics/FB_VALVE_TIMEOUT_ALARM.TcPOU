@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_VALVE_TIMEOUT_ALARM" Id="{5a1e804e-ce2a-4294-be03-33d8dc9254b6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_VALVE_TIMEOUT_ALARM
+VAR_IN_OUT
+	Handler : FB_ALARM_HANDLER;
+	Config : TYP_VALVE_TIMEOUT_ALARM_CONF;
+END_VAR
+VAR_INPUT
+	Condition : BOOL;
+END_VAR
+VAR_OUTPUT
+	Error : BOOL;
+END_VAR
+VAR
+	_alarm : FB_ALARM;
+	Timer : TON;
+	PosEdge : R_TRIG;
+	NegEdge : F_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Timer(IN := Condition, PT := Config.Delay);
+
+PosEdge(CLK := Timer.Q);
+NegEdge(CLK := Timer.Q);
+
+_alarm(Handler := Handler);
+
+IF PosEdge.Q AND Config.Enable THEN
+	_alarm.Activate();
+END_IF;
+
+IF NegEdge.Q THEN
+	_alarm.Reset();
+END_IF;
+
+Error := Timer.Q;]]></ST>
+    </Implementation>
+    <Property Name="Alarm" Id="{1e29ebee-bb90-418d-ba9e-85cbc6413840}">
+      <Declaration><![CDATA[PROPERTY PUBLIC Alarm : REFERENCE TO FB_ALARM]]></Declaration>
+      <Get Name="Get" Id="{16cae72b-e73f-4a9a-b2de-1ea0a390f88b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Alarm REF= THIS^._alarm;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <LineIds Name="FB_VALVE_TIMEOUT_ALARM">
+      <LineId Id="20" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="37" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_VALVE_TIMEOUT_ALARM.Alarm.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_FAULHABER_SC" Id="{1236047a-c21f-461a-9106-91ab2c1846f9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_FAULHABER_SC
+VAR_IN_OUT
+	Hardware : TYP_FAULHABER_SC_HW;
+END_VAR
+VAR_INPUT
+	AlarmConfig : TYP_ALARM_DEVICE_CONFIG;
+	Control : TYP_FAULHABER_SC_CTRL;
+END_VAR
+VAR_OUTPUT
+	Error : BOOL;
+END_VAR
+VAR
+	FaultAlarm : FB_ALARM;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[FaultAlarm.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
+FaultAlarm.Config.Name := CONCAT(AlarmConfig.Name, '_DRIVE_FAULT');
+FaultAlarm(Handler := AlarmConfig.Handler);
+
+IF Hardware.In.Fault THEN
+	FaultAlarm.Activate();
+END_IF;
+
+Error := Hardware.In.Fault;
+
+IF Control.Run AND Control.Enable THEN
+	Hardware.Out.Speed := ABS(Control.Speed);
+	Hardware.Out.Direction := Control.Speed >= 0;
+ELSE
+	Hardware.Out.Speed := 0;
+END_IF;
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_FAULHABER_SC">
+      <LineId Id="28" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="45" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

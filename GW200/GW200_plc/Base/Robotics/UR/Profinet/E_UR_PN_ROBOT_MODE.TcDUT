@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_UR_PN_ROBOT_MODE" Id="{b17330e9-cb02-4fa5-b0fe-5ea14f37147a}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+//{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_UR_PN_ROBOT_MODE :
+(
+	DISCONNECTED := 0,
+	CONFIRM_SAFETY := 1,
+	BOOTING := 2,
+	POWER_OFF := 3,
+	POWER_ON := 4,
+	IDLE := 5,
+	BACKDRIVE := 6,
+	RUNNING := 7
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

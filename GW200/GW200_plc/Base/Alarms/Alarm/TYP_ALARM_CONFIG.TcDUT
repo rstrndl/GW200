@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_ALARM_CONFIG" Id="{a910418c-b4f4-4461-b4da-d76263d85a2e}">
+    <Declaration><![CDATA[TYPE TYP_ALARM_CONFIG :
+STRUCT
+	Name : STRING;
+	Priority : INT;
+	Code : DINT;
+	Acknowledge : E_ALARM_ACK_TYPE;
+	MultiInstance : BOOL; // Alarm going active again creates new alarm instance
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

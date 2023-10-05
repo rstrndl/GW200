@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_UR_PN_TCP" Id="{80822bd5-255c-471c-94db-1bc722ab0af7}">
+    <Declaration><![CDATA[TYPE TYP_UR_PN_TCP :
+STRUCT
+	Position : TYP_REAL_XYZ;
+	PositionR : TYP_REAL_XYZ;
+	Velocity : TYP_REAL_XYZ;
+	VelocityR : TYP_REAL_XYZ;
+	Force : TYP_REAL_XYZ;
+	Torque : TYP_REAL_XYZ;
+	ForceScalar : REAL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

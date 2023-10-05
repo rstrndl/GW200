@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_RGB_LED" Id="{74dccedb-5e88-445d-bb93-b267d6d80982}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_RGB_LED
+VAR_IN_OUT
+	Hardware : TYP_RGB_LED_HW;
+END_VAR
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="SetRGB" Id="{a38c9d3c-4497-4c2b-bcf4-1b6cccfeebd2}">
+      <Declaration><![CDATA[METHOD PUBLIC SetRGB : REFERENCE TO FB_RGB_LED
+VAR_INPUT
+	Red : USINT;
+	Green : USINT;
+	Blue : USINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[{warning disable C0371}
+
+// Checking the VAR_IN_OUT reference, leave the current method in case of invalid reference
+IF NOT __ISVALIDREF(THIS^.Hardware) THEN
+     RETURN;
+END_IF
+
+THIS^.Hardware.Red.Out.PWM := REAL_TO_INT((USINT_TO_REAL(Red) / 255) * 32767);
+THIS^.Hardware.Green.Out.PWM := REAL_TO_INT((USINT_TO_REAL(Green) / 255) * 32767);
+THIS^.Hardware.Blue.Out.PWM := REAL_TO_INT((USINT_TO_REAL(Blue) / 255) * 32767);]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_RGB_LED">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RGB_LED.SetRGB">
+      <LineId Id="13" Count="4" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

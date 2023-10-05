@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_RGB_LED_HW" Id="{05f1f1e4-9659-4365-b906-fd3e4e429192}">
+    <Declaration><![CDATA[TYPE TYP_RGB_LED_HW :
+STRUCT
+	Red : TYP_RGB_LED_CHANNEL;
+	Green : TYP_RGB_LED_CHANNEL;
+	Blue : TYP_RGB_LED_CHANNEL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

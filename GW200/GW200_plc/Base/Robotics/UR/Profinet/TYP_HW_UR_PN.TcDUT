@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_HW_UR_PN" Id="{0ee9270e-954a-484b-acf7-33d832119eee}">
+    <Declaration><![CDATA[TYPE TYP_HW_UR_PN :
+STRUCT
+	In : TYP_HW_UR_PN_IN;
+	Out : TYP_HW_UR_PN_OUT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

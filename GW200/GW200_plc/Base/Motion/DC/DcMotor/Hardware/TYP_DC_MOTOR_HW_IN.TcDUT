@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_DC_MOTOR_HW_IN" Id="{a16a97e8-e49b-4c15-ad14-2e51b72b67ac}">
+    <Declaration><![CDATA[TYPE TYP_DC_MOTOR_HW_IN :
+STRUCT
+	LimitHP AT %I* : BOOL;
+	LimitWP AT %I* : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

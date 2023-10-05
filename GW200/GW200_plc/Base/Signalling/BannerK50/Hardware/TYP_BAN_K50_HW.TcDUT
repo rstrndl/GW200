@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TYP_BAN_K50_HW" Id="{070eb6f5-4dd9-4d0e-ac61-24597f7592e5}">
+    <Declaration><![CDATA[TYPE TYP_BAN_K50_HW :
+STRUCT
+	In : TYP_BAN_K50_HW_IN;
+	Out : TYP_BAN_K50_HW_OUT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

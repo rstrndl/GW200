@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_RS_TRIG" Id="{5e76f356-e397-4f73-853a-f86f47d47ef4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_RS_TRIG
+VAR_INPUT
+	CLK : BOOL;
+END_VAR
+VAR_OUTPUT
+	Q : BOOL; // pos edge
+	QS : BOOL; // pos edge set
+END_VAR
+VAR
+	Trig : R_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Trig(CLK := CLK, Q => Q);
+IF Trig.Q THEN
+	QS := TRUE;
+END_IF;]]></ST>
+    </Implementation>
+    <Method Name="Reset" Id="{e4f6ffeb-289d-4606-9e9e-9a4a9ddc8329}">
+      <Declaration><![CDATA[METHOD PUBLIC Reset : REFERENCE TO FB_RS_TRIG
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.QS := FALSE;
+
+Reset REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_RS_TRIG">
+      <LineId Id="9" Count="0" />
+      <LineId Id="24" Count="2" />
+    </LineIds>
+    <LineIds Name="FB_RS_TRIG.Reset">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

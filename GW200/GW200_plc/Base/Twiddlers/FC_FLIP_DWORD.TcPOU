@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FC_FLIP_DWORD" Id="{4945bcf8-8aef-45b8-bda2-dd4476887c34}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION FC_FLIP_DWORD
+VAR_INPUT
+	In : POINTER TO BYTE;
+	Out : POINTER TO BYTE;
+END_VAR
+VAR
+	ByteArray : ARRAY[0..3] OF BYTE;
+	ReturnArray : ARRAY[0..3] OF BYTE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[MEMCPY(srcAddr := In, destAddr := ADR(ByteArray), n := 4);
+
+ReturnArray[0] := ByteArray[3];
+ReturnArray[1] := ByteArray[2];
+ReturnArray[2] := ByteArray[1];
+ReturnArray[3] := ByteArray[0];
+
+MEMCPY(srcAddr := ADR(ReturnArray), destAddr := Out, n := 4);]]></ST>
+    </Implementation>
+    <LineIds Name="FC_FLIP_DWORD">
+      <LineId Id="54" Count="7" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

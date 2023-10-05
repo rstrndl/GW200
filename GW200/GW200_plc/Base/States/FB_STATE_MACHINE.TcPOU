@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_STATE_MACHINE" Id="{7d1b6763-e9bf-4251-9730-332ebffa1284}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_STATE_MACHINE
+VAR_IN_OUT
+	State : INT;
+	AlarmHandler : FB_ALARM_HANDLER;
+END_VAR
+VAR_INPUT
+	StateAsString : STRING;
+	DebugMode : BOOL;
+	DebugNext : BOOL;
+	StopAllowed : BOOL;
+	Timeout : TIME;
+END_VAR
+VAR_OUTPUT
+	CurrentState : INT;
+	_firstCycle : BOOL := TRUE;
+	StateChangeTime : TIME := TIME();
+	Running : BOOL;
+	Stopped : BOOL;
+	StopRequested : BOOL;
+	PreviousState : INT;
+END_VAR
+VAR
+	_changePending : BOOL;
+	DelayStart : TIME;
+	ChangeDelay : TIME;
+	NewState : INT;
+	NextState : INT;
+	TimeoutAlarm : FB_ALARM;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF NOT DebugMode THEN
+	DebugNext := FALSE;
+END_IF;
+
+IF Running AND StopRequested AND StopAllowed THEN
+	Running := FALSE;
+	Stopped := TRUE;
+	StopRequested := FALSE;
+END_IF;
+
+IF NewState <> CurrentState AND (NOT DebugMode OR DebugNext) AND Running THEN
+	PreviousState := CurrentState;
+	CurrentState := NewState;
+	StateChangeTime := TIME();
+	_firstCycle := TRUE;
+	DebugNext := FALSE;
+	
+	Timeout := T#0S;
+	DelayStart := T#0S;
+	ChangeDelay := T#0S;
+	_changePending := FALSE;
+	NextState := 0;
+ELSE
+	_firstCycle := FALSE;
+END_IF;
+
+IF _changePending AND TIME() >= (DelayStart + ChangeDelay) THEN
+	THIS^.NewState := NextState;
+END_IF;
+
+IF Timeout > T#0S AND THIS^.GetElapsedTime() > Timeout  THEN
+	IF NOT TimeoutAlarm.IsActive THEN
+		TimeoutAlarm.Config.Name := CONCAT(StateAsString, '*TIMEOUT_ALARM');
+		TimeoutAlarm.Activate();
+	END_IF;
+END_IF;
+
+TimeoutAlarm.Config.Acknowledge := E_ALARM_ACK_TYPE.ONLY_ACK;
+TimeoutAlarm.Config.MultiInstance := TRUE;
+TimeoutAlarm(Handler := AlarmHandler);
+
+State := CurrentState;
+
+StopAllowed := FALSE;]]></ST>
+    </Implementation>
+    <Property Name="ChangePending" Id="{c3933dbc-44b3-4f8b-8288-0731e877cb96}">
+      <Declaration><![CDATA[PROPERTY PUBLIC ChangePending : BOOL]]></Declaration>
+      <Get Name="Get" Id="{08951099-7398-4a3b-81b4-d97920bf8409}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ChangePending := THIS^._changePending;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ChangeState" Id="{d944d479-1873-42b0-ac26-c88d17df6939}">
+      <Declaration><![CDATA[METHOD ChangeState : REFERENCE TO FB_STATE_MACHINE
+VAR_INPUT
+	State : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _changePending AND THIS^.Running THEN
+	_changePending := TRUE;
+	NextState := State;
+END_IF;
+
+ChangeState REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ChangeStateAfterDelay" Id="{8a41a32d-9e87-4d32-8435-d1fe8bc78b79}">
+      <Declaration><![CDATA[METHOD ChangeStateAfterDelay : REFERENCE TO FB_STATE_MACHINE
+VAR_INPUT
+	State : INT;
+	Delay : TIME;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _changePending AND THIS^.Running THEN
+	_changePending := TRUE;
+	NextState := State;
+	DelayStart := TIME();
+	ChangeDelay := Delay;
+END_IF;
+
+ChangeStateAfterDelay REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="FirstCycle" Id="{b117b3e9-9958-43f3-bd94-da2b0501908c}">
+      <Declaration><![CDATA[PROPERTY PUBLIC FirstCycle : BOOL]]></Declaration>
+      <Get Name="Get" Id="{5de37df5-c889-44e7-8dc1-bc128e7a196a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FirstCycle := _firstCycle AND Running;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="GetElapsedTime" Id="{e06b4974-7005-4897-b5f2-5216723e3ee2}">
+      <Declaration><![CDATA[METHOD PUBLIC GetElapsedTime : TIME
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetElapsedTime := TIME() - StateChangeTime;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{a422df67-a07a-44c8-b7d7-825481410d27}">
+      <Declaration><![CDATA[METHOD PUBLIC Reset : REFERENCE TO FB_STATE_MACHINE
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.CurrentState := 0;
+THIS^.NewState := 0;
+THIS^._firstCycle := TRUE;
+THIS^.StateChangeTime := TIME();
+THIS^._changePending := FALSE;
+THIS^.DelayStart := T#0S;
+THIS^.ChangeDelay := T#0S;
+THIS^.NextState := 0;
+THIS^.Running := FALSE;
+THIS^.Stopped := FALSE;
+THIS^.StopRequested := FALSE;
+
+Reset REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Start" Id="{2035f4d6-0d00-4498-8f45-5f2f389a8f06}">
+      <Declaration><![CDATA[{attribute 'TcRpcEnable'}
+METHOD PUBLIC Start : REFERENCE TO FB_STATE_MACHINE
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.Running := TRUE;
+THIS^.StopRequested := FALSE;
+
+Start REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Stop" Id="{e3a56f71-47af-4e26-878b-563e9ccbf174}">
+      <Declaration><![CDATA[{attribute 'TcRpcEnable'}
+METHOD PUBLIC Stop : REFERENCE TO FB_STATE_MACHINE
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.StopRequested := TRUE;
+
+Stop REF= THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_STATE_MACHINE">
+      <LineId Id="351" Count="2" />
+      <LineId Id="376" Count="0" />
+      <LineId Id="375" Count="0" />
+      <LineId Id="378" Count="0" />
+      <LineId Id="383" Count="1" />
+      <LineId Id="379" Count="0" />
+      <LineId Id="354" Count="1" />
+      <LineId Id="461" Count="0" />
+      <LineId Id="356" Count="3" />
+      <LineId Id="413" Count="0" />
+      <LineId Id="412" Count="0" />
+      <LineId Id="361" Count="10" />
+      <LineId Id="425" Count="2" />
+      <LineId Id="429" Count="0" />
+      <LineId Id="431" Count="0" />
+      <LineId Id="430" Count="0" />
+      <LineId Id="428" Count="0" />
+      <LineId Id="421" Count="2" />
+      <LineId Id="372" Count="0" />
+      <LineId Id="424" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="382" Count="0" />
+      <LineId Id="381" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_STATE_MACHINE.ChangePending.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_STATE_MACHINE.ChangeState">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_STATE_MACHINE.ChangeStateAfterDelay">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_STATE_MACHINE.FirstCycle.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_STATE_MACHINE.GetElapsedTime">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_STATE_MACHINE.Reset">
+      <LineId Id="5" Count="1" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="17" Count="2" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="23" Count="1" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_STATE_MACHINE.Start">
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_STATE_MACHINE.Stop">
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

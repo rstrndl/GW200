@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{3ab64eb6-3b95-46e1-99ae-9f362911abb1}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	//State machines
+	fbMainState : FB_STATE_MACHINE;
+	fbColdStartState : FB_STATE_MACHINE;
+	eMainState : E_MAIN_STATE;
+	eColdStartState : E_COLD_START_STATE;
+	//Alarm handler
+	fbAlarmRepository : FB_ALARM_REPOSITORY;
+	fbMainHandler : FB_ALARM_HANDLER;
+	fbAlarms : ARRAY[0..99] OF FB_ALARM_INSTANCE;
+	fbVisuAlarms : ARRAY[0..99] OF TYP_VISU_ALARM;
+	fbEmStopAlarm : FB_ALARM;
+	//Control loops and function blocks
+	fbPurgeN2 : FB_PURGE_N2;
+	fbPresCntrl : FB_PRES_CNTRL;
+	
+	bTestalarm : BOOL;
+	bTestReset : BOOL;
+	bTestAcknowledge : BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Alarm function blocks
+fbAlarmRepository(Alarms := fbAlarms, VisuAlarms := fbVisuAlarms);
+fbMainHandler(Prefix := 'MAIN', Repository := fbAlarmRepository);
+
+fbEmStopAlarm.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
+fbEmStopAlarm.Config.Name := 'EMERGENCY_STOP_ACTIVATED';
+fbEmStopAlarm.Config.Priority := 3;
+fbEmStopAlarm(Handler := fbMainHandler);
+
+//Control loops, control functionblocks
+fbPurgeN2(Control := gPurgeN2.Control, Parameter := gPurgeN2.Parameter, Status => gPurgeN2.Status);
+fbPresCntrl(Control := gPresCntrl.Control, Parameter := gPresCntrl.Parameter, Status => gPresCntrl.Status);
+
+//Example how alarms work
+IF bTestalarm THEN
+	fbEmStopAlarm.Activate();
+ELSIF bTestReset THEN
+	fbEmStopAlarm.Reset();
+ELSIF bTestAcknowledge THEN
+	fbEmStopAlarm.Acknowledge();
+END_IF
+
+CASE fbMainState.CurrentState OF //Main state machine
+	E_MAIN_STATE.IDLE:
+	 //
+	E_MAIN_STATE.COLD_START: //Cold start state
+		CASE fbColdStartState.CurrentState OF
+			E_COLD_START_STATE.N2_PURGE: //Nitorgen purge state
+				IF fbColdStartState._firstCycle THEN
+					gPurgeN2.Parameter.NoPurge := 5;
+					gPurgeN2.Control.Execute := TRUE;
+					gPresCntrl.Parameter.SetPoint := 2.0;
+					gPresCntrl.Control.Execute := TRUE;
+				ELSIF NOT fbColdStartState.ChangePending THEN
+					IF gPurgeN2.Status.Done THEN
+						fbColdStartState.ChangeState(E_COLD_START_STATE.TEMPERATURE);
+					END_IF
+				END_IF	
+			E_COLD_START_STATE.TEMPERATURE:
+				//
+			E_COLD_START_STATE.PRESSURISE:
+				//
+			E_COLD_START_STATE.H2_PURGE:
+				//
+		END_CASE	
+	
+	E_MAIN_STATE.HOT_STANDBY:
+		//
+	E_MAIN_STATE.PRODUCTION:
+		//
+	E_MAIN_STATE.COLD_STANDBY:
+		//
+	E_MAIN_STATE.HOT_START:
+		//
+	E_MAIN_STATE.SHUT_DOWN:
+		//
+END_CASE
+
+
+fbMainState(State := eMainState, AlarmHandler := fbMainHandler, StateAsString := TO_STRING(eMainState));
+fbColdStartState(State := eColdStartState, AlarmHandler := fbMainHandler, StateAsString := TO_STRING(eColdStartState));]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="445" Count="2" />
+      <LineId Id="505" Count="0" />
+      <LineId Id="448" Count="1" />
+      <LineId Id="503" Count="0" />
+      <LineId Id="450" Count="0" />
+      <LineId Id="501" Count="0" />
+      <LineId Id="451" Count="2" />
+      <LineId Id="502" Count="0" />
+      <LineId Id="454" Count="46" />
+      <LineId Id="48" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

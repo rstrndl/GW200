@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_EL6001_RS232" Id="{e3559a5b-0108-4532-aafa-a35846972476}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_EL6001_RS232
+VAR_IN_OUT
+	LineCtrl : FB_EL6001_LINE_CTRL;
+END_VAR
+VAR_INPUT
+	Send : BOOL;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	ReceiveString : ReceiveString255;
+	SendString : SendString255;
+	RecvStr : STRING[255];
+	SendStr : STRING[255];
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ReceiveString(RXbuffer := LineCtrl.RxBuffer, ReceivedString := RecvStr, Timeout := T#1S);
+
+IF Send THEN
+	SendString(TXbuffer := LineCtrl.TxBuffer, SendString := SendStr);
+	IF NOT SendString.Busy THEN
+		Send := FALSE;
+	END_IF;
+END_IF;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_EL6001_RS232">
+      <LineId Id="18" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="74" Count="2" />
+      <LineId Id="72" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

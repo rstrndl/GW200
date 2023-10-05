@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="gPurgeN2" Id="{fffbf133-e4e3-4c63-91bc-506087c565d2}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	Control: TYP_PURGE_N2_CONTROL;
+	Parameter : TYP_PURGE_N2_PARAMETER;
+	Status : TYP_PURGE_N2_STATUS;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>
