@@ -394,6 +394,12 @@
     <Compile Include="Main\PressureControl\TYP_PRES_CNTRL_CONTROL.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Main\PurgeN2\E_N2_STATES.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main\PurgeN2\FB_N2_DEVICE.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Main\PurgeN2\FB_PURGE_N2.TcPOU">
       <SubType>Code</SubType>
     </Compile>

@@ -24,7 +24,8 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[SystemTime( timeLoDW =>timeAsFileTime.dwLowDateTime , timeHiDW =>timeAsFileTime.dwHighDateTime );
-GetCurrentDateTime := FILETIME_TO_DT( timeAsFileTime );]]></ST>
+GetCurrentDateTime := FILETIME_TO_DT( timeAsFileTime );
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="GetTimeDiff" Id="{a91b3ef1-003e-431e-a9e9-71c26a60e592}">
@@ -54,6 +55,7 @@ END_VAR
     <LineIds Name="FB_DATETIME.GetCurrentDateTime">
       <LineId Id="11" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="24" Count="0" />
     </LineIds>
     <LineIds Name="FB_DATETIME.GetTimeDiff">
       <LineId Id="5" Count="0" />

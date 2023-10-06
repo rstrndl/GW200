@@ -11,6 +11,7 @@ VAR
 	//Alarm handler
 	fbAlarmRepository : FB_ALARM_REPOSITORY;
 	fbMainHandler : FB_ALARM_HANDLER;
+	fbColdStartHandler : FB_ALARM_HANDLER;
 	fbAlarms : ARRAY[0..99] OF FB_ALARM_INSTANCE;
 	fbVisuAlarms : ARRAY[0..99] OF TYP_VISU_ALARM;
 	fbEmStopAlarm : FB_ALARM;
@@ -21,20 +22,24 @@ VAR
 	bTestalarm : BOOL;
 	bTestReset : BOOL;
 	bTestAcknowledge : BOOL;
+	
+	getZone : FB_LocalSystemTime;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[//Alarm function blocks
 fbAlarmRepository(Alarms := fbAlarms, VisuAlarms := fbVisuAlarms);
 fbMainHandler(Prefix := 'MAIN', Repository := fbAlarmRepository);
+fbColdStartHandler(Prefix := 'COLD_START', Repository := fbAlarmRepository);
 
 fbEmStopAlarm.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
 fbEmStopAlarm.Config.Name := 'EMERGENCY_STOP_ACTIVATED';
 fbEmStopAlarm.Config.Priority := 3;
+fbEmStopAlarm.Config.Code := 0001;
 fbEmStopAlarm(Handler := fbMainHandler);
 
 //Control loops, control functionblocks
-fbPurgeN2(Control := gPurgeN2.Control, Parameter := gPurgeN2.Parameter, Status => gPurgeN2.Status);
+fbPurgeN2(AlarmRepository := fbAlarmRepository, Control := gPurgeN2.Control, Parameter := gPurgeN2.Parameter, Status => gPurgeN2.Status);
 fbPresCntrl(Control := gPresCntrl.Control, Parameter := gPresCntrl.Parameter, Status => gPresCntrl.Status);
 
 //Example how alarms work
@@ -82,20 +87,25 @@ CASE fbMainState.CurrentState OF //Main state machine
 		//
 END_CASE
 
+getZone();
 
 fbMainState(State := eMainState, AlarmHandler := fbMainHandler, StateAsString := TO_STRING(eMainState));
-fbColdStartState(State := eColdStartState, AlarmHandler := fbMainHandler, StateAsString := TO_STRING(eColdStartState));]]></ST>
+fbColdStartState(State := eColdStartState, AlarmHandler := fbColdStartHandler, StateAsString := TO_STRING(eColdStartState));]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="445" Count="2" />
+      <LineId Id="527" Count="0" />
       <LineId Id="505" Count="0" />
       <LineId Id="448" Count="1" />
       <LineId Id="503" Count="0" />
+      <LineId Id="530" Count="0" />
       <LineId Id="450" Count="0" />
       <LineId Id="501" Count="0" />
       <LineId Id="451" Count="2" />
       <LineId Id="502" Count="0" />
-      <LineId Id="454" Count="46" />
+      <LineId Id="454" Count="44" />
+      <LineId Id="555" Count="0" />
+      <LineId Id="499" Count="1" />
       <LineId Id="48" Count="0" />
     </LineIds>
   </POU>
