@@ -16,7 +16,7 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[fbPurgeN2DeviceError.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
-fbPurgeN2DeviceError.Config.Name := CONCAT(AlarmConfig.Name, '*PURGE_N2_GENERAL_ERROR');
+fbPurgeN2DeviceError.Config.Name := CONCAT(AlarmConfig.Name, '*PURGE_N2_DEVICE_ERROR');
 fbPurgeN2DeviceError.Config.Priority := 3;
 fbPurgeN2DeviceError(Handler := AlarmConfig.Handler);
 
