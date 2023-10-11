@@ -11,7 +11,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{C3AB1302-3E35-4246-8C4D-5190A0093AE0}" Name="GW200_plc" PrjFilePath="GW200_plc\GW200_plc.plcproj" TmcFilePath="GW200_plc\GW200_plc.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="GW200_plc\GW200_plc.tmc" TmcHash="{9920DFB7-6685-F8E0-021B-CB34FFADD4B7}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="GW200_plc\GW200_plc.tmc" TmcHash="{FC9859E1-4774-02E2-6B36-BB16F994CB17}">
 					<Name>GW200_plc Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>

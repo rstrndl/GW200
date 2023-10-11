@@ -55,13 +55,17 @@ ELSIF bTestAcknowledge THEN
 END_IF
 
 IF bChangeState THEN
-	fbMainState.Start();
+	IF NOT fbMainState.Running THEN
+		fbMainState.Start();
+	END_IF
 	fbMainState.ChangeState(eNewState);
 	bChangeState := FALSE;
 END_IF
 
 IF bChangeStateDelay THEN
-	fbMainState.Start();
+	IF NOT fbMainState.Running THEN
+		fbMainState.Start();
+	END_IF
 	fbMainState.ChangeStateAfterDelay(eNewState, T#2S);
 	bChangeStateDelay := FALSE;
 END_IF
@@ -73,16 +77,7 @@ CASE fbMainState.CurrentState OF //Main state machine
 	E_MAIN_STATE.COLD_START: //Cold start state
 		CASE fbColdStartState.CurrentState OF
 			E_COLD_START_STATE.N2_PURGE: //Nitorgen purge state
-				IF fbColdStartState._firstCycle THEN
-					gPurgeN2.Parameter.NoPurge := 5;
-					gPurgeN2.Control.Execute := TRUE;
-					gPresCntrl.Parameter.SetPoint := 2.0;
-					gPresCntrl.Control.Execute := TRUE;
-				ELSIF NOT fbColdStartState.ChangePending THEN
-					IF gPurgeN2.Status.Done THEN
-						fbColdStartState.ChangeState(E_COLD_START_STATE.TEMPERATURE);
-					END_IF
-				END_IF	
+				//
 			E_COLD_START_STATE.TEMPERATURE:
 				//
 			E_COLD_START_STATE.PRESSURISE:
@@ -122,14 +117,20 @@ fbColdStartState(State := eColdStartState, AlarmHandler := fbColdStartHandler, S
       <LineId Id="454" Count="7" />
       <LineId Id="581" Count="0" />
       <LineId Id="580" Count="0" />
+      <LineId Id="622" Count="0" />
       <LineId Id="588" Count="0" />
+      <LineId Id="623" Count="0" />
       <LineId Id="582" Count="0" />
       <LineId Id="587" Count="0" />
       <LineId Id="583" Count="0" />
       <LineId Id="604" Count="0" />
-      <LineId Id="606" Count="4" />
+      <LineId Id="606" Count="0" />
+      <LineId Id="624" Count="1" />
+      <LineId Id="607" Count="3" />
       <LineId Id="605" Count="0" />
-      <LineId Id="462" Count="36" />
+      <LineId Id="462" Count="6" />
+      <LineId Id="621" Count="0" />
+      <LineId Id="479" Count="19" />
       <LineId Id="555" Count="0" />
       <LineId Id="499" Count="1" />
       <LineId Id="48" Count="0" />
