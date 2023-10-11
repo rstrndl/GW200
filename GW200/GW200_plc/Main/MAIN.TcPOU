@@ -11,6 +11,7 @@ VAR
 	//Alarm handler
 	fbAlarmRepository : FB_ALARM_REPOSITORY;
 	fbMainHandler : FB_ALARM_HANDLER;
+	fbColdStartHandler : FB_ALARM_HANDLER;
 	fbAlarms : ARRAY[0..99] OF FB_ALARM_INSTANCE;
 	fbVisuAlarms : ARRAY[0..99] OF TYP_VISU_ALARM;
 	fbEmStopAlarm : FB_ALARM;
@@ -21,20 +22,27 @@ VAR
 	bTestalarm : BOOL;
 	bTestReset : BOOL;
 	bTestAcknowledge : BOOL;
+	
+	getZone : FB_LocalSystemTime;
+	bChangeState: BOOL;
+	eNewState : E_MAIN_STATE;
+	bChangeStateDelay: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[//Alarm function blocks
 fbAlarmRepository(Alarms := fbAlarms, VisuAlarms := fbVisuAlarms);
 fbMainHandler(Prefix := 'MAIN', Repository := fbAlarmRepository);
+fbColdStartHandler(Prefix := 'COLD_START', Repository := fbAlarmRepository);
 
 fbEmStopAlarm.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
 fbEmStopAlarm.Config.Name := 'EMERGENCY_STOP_ACTIVATED';
 fbEmStopAlarm.Config.Priority := 3;
+fbEmStopAlarm.Config.Code := 0001;
 fbEmStopAlarm(Handler := fbMainHandler);
 
 //Control loops, control functionblocks
-fbPurgeN2(Control := gPurgeN2.Control, Parameter := gPurgeN2.Parameter, Status => gPurgeN2.Status);
+fbPurgeN2(AlarmRepository := fbAlarmRepository, Control := gPurgeN2.Control, Parameter := gPurgeN2.Parameter, Status => gPurgeN2.Status);
 fbPresCntrl(Control := gPresCntrl.Control, Parameter := gPresCntrl.Parameter, Status => gPresCntrl.Status);
 
 //Example how alarms work
@@ -46,22 +54,30 @@ ELSIF bTestAcknowledge THEN
 	fbEmStopAlarm.Acknowledge();
 END_IF
 
+IF bChangeState THEN
+	IF NOT fbMainState.Running THEN
+		fbMainState.Start();
+	END_IF
+	fbMainState.ChangeState(eNewState);
+	bChangeState := FALSE;
+END_IF
+
+IF bChangeStateDelay THEN
+	IF NOT fbMainState.Running THEN
+		fbMainState.Start();
+	END_IF
+	fbMainState.ChangeStateAfterDelay(eNewState, T#2S);
+	bChangeStateDelay := FALSE;
+END_IF
+
+
 CASE fbMainState.CurrentState OF //Main state machine
 	E_MAIN_STATE.IDLE:
 	 //
 	E_MAIN_STATE.COLD_START: //Cold start state
 		CASE fbColdStartState.CurrentState OF
 			E_COLD_START_STATE.N2_PURGE: //Nitorgen purge state
-				IF fbColdStartState._firstCycle THEN
-					gPurgeN2.Parameter.NoPurge := 5;
-					gPurgeN2.Control.Execute := TRUE;
-					gPresCntrl.Parameter.SetPoint := 2.0;
-					gPresCntrl.Control.Execute := TRUE;
-				ELSIF NOT fbColdStartState.ChangePending THEN
-					IF gPurgeN2.Status.Done THEN
-						fbColdStartState.ChangeState(E_COLD_START_STATE.TEMPERATURE);
-					END_IF
-				END_IF	
+				//
 			E_COLD_START_STATE.TEMPERATURE:
 				//
 			E_COLD_START_STATE.PRESSURISE:
@@ -82,20 +98,41 @@ CASE fbMainState.CurrentState OF //Main state machine
 		//
 END_CASE
 
+getZone();
 
 fbMainState(State := eMainState, AlarmHandler := fbMainHandler, StateAsString := TO_STRING(eMainState));
-fbColdStartState(State := eColdStartState, AlarmHandler := fbMainHandler, StateAsString := TO_STRING(eColdStartState));]]></ST>
+fbColdStartState(State := eColdStartState, AlarmHandler := fbColdStartHandler, StateAsString := TO_STRING(eColdStartState));]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="445" Count="2" />
+      <LineId Id="527" Count="0" />
       <LineId Id="505" Count="0" />
       <LineId Id="448" Count="1" />
       <LineId Id="503" Count="0" />
+      <LineId Id="530" Count="0" />
       <LineId Id="450" Count="0" />
       <LineId Id="501" Count="0" />
       <LineId Id="451" Count="2" />
       <LineId Id="502" Count="0" />
-      <LineId Id="454" Count="46" />
+      <LineId Id="454" Count="7" />
+      <LineId Id="581" Count="0" />
+      <LineId Id="580" Count="0" />
+      <LineId Id="622" Count="0" />
+      <LineId Id="588" Count="0" />
+      <LineId Id="623" Count="0" />
+      <LineId Id="582" Count="0" />
+      <LineId Id="587" Count="0" />
+      <LineId Id="583" Count="0" />
+      <LineId Id="604" Count="0" />
+      <LineId Id="606" Count="0" />
+      <LineId Id="624" Count="1" />
+      <LineId Id="607" Count="3" />
+      <LineId Id="605" Count="0" />
+      <LineId Id="462" Count="6" />
+      <LineId Id="621" Count="0" />
+      <LineId Id="479" Count="19" />
+      <LineId Id="555" Count="0" />
+      <LineId Id="499" Count="1" />
       <LineId Id="48" Count="0" />
     </LineIds>
   </POU>

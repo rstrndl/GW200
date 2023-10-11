@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_N2_DEVICE" Id="{f0b43921-35fb-4e47-b654-653011a067a3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_N2_DEVICE
+VAR_INPUT
+	AlarmConfig : TYP_ALARM_DEVICE_CONFIG;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	bTestalarm : BOOL;
+	bTestReset : BOOL;
+	bTestAcknowledge : BOOL;
+	fbPurgeN2DeviceError : FB_ALARM;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbPurgeN2DeviceError.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
+fbPurgeN2DeviceError.Config.Name := CONCAT(AlarmConfig.Name, '*PURGE_N2_DEVICE_ERROR');
+fbPurgeN2DeviceError.Config.Priority := 3;
+fbPurgeN2DeviceError(Handler := AlarmConfig.Handler);
+
+IF bTestalarm THEN
+	fbPurgeN2DeviceError.Activate();
+ELSIF bTestReset THEN
+	fbPurgeN2DeviceError.Reset();
+ELSIF bTestAcknowledge THEN
+	fbPurgeN2DeviceError.Acknowledge();
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="FB_N2_DEVICE">
+      <LineId Id="15" Count="2" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="20" Count="6" />
+      <LineId Id="19" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

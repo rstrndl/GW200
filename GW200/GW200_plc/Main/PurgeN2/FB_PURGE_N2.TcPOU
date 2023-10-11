@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_PURGE_N2" Id="{c118c864-925d-4c59-b80c-cc2c54f59f1f}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_PURGE_N2
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PURGE_N2 EXTENDS FBA_SEQUENCE
 VAR_INPUT
 
 END_VAR
@@ -13,6 +13,15 @@ VAR_OUTPUT
 	Status : TYP_PURGE_N2_STATUS;
 END_VAR
 VAR
+	AlarmHandler : FB_ALARM_HANDLER;
+	fbPurgeN2GeneralError : FB_ALARM;
+	bInit : BOOL;
+	bReset : BOOL;
+	bTestalarm : BOOL;
+	bTestReset : BOOL;
+	bTestAcknowledge : BOOL;
+	fbPurgeN2Device : FB_N2_DEVICE;
+	State : E_N2_STATES;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -21,12 +30,91 @@ END_VAR
 //Check if purging time reached
 //Repeat x times
 //Close valves
-//Done := TRUE]]></ST>
+//Done := TRUE
+IF bInit THEN
+	THIS^.Initialize();
+	bInit := FALSE;
+END_IF
+
+IF bReset THEN
+	THIS^.Reset();
+	bReset := FALSE;
+END_IF
+
+AlarmHandler(Prefix:='PURGE_N2', Repository:=AlarmRepository);
+fbPurgeN2GeneralError.Config.Acknowledge := E_ALARM_ACK_TYPE.ACK_AND_RESET;
+fbPurgeN2GeneralError.Config.Name := 'PURGE_N2_GENERAL_ERROR';
+fbPurgeN2GeneralError.Config.Priority := 3;
+fbPurgeN2GeneralError.Config.Code := 1000;
+fbPurgeN2GeneralError(Handler := AlarmHandler);
+
+fbPurgeN2Device.AlarmConfig.Name := 'N2_DEVICE';
+fbPurgeN2Device.AlarmConfig.Handler REF= AlarmHandler;
+fbPurgeN2Device();
+
+//Example how alarms work
+IF bTestalarm THEN
+	fbPurgeN2GeneralError.Activate();
+ELSIF bTestReset THEN
+	fbPurgeN2GeneralError.Reset();
+ELSIF bTestAcknowledge THEN
+	fbPurgeN2GeneralError.Acknowledge();
+END_IF
+
+_state(State := State, AlarmHandler := AlarmHandler, StateAsString := TO_STRING(State));
+]]></ST>
     </Implementation>
+    <Method Name="Initialize" Id="{25771e6c-3957-489a-a702-edeae513d440}">
+      <Declaration><![CDATA[METHOD PUBLIC  Initialize : REFERENCE TO FBA_SEQUENCE
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{ed6229a8-d849-483f-95b8-8ce8abb3a871}">
+      <Declaration><![CDATA[METHOD PUBLIC  Reset : REFERENCE TO FBA_SEQUENCE
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_PURGE_N2">
       <LineId Id="9" Count="0" />
       <LineId Id="23" Count="2" />
       <LineId Id="27" Count="1" />
+      <LineId Id="52" Count="1" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="47" Count="1" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="65" Count="7" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="97" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_PURGE_N2.Initialize">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_PURGE_N2.Reset">
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
