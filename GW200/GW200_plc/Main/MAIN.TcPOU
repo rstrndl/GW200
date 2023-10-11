@@ -24,6 +24,9 @@ VAR
 	bTestAcknowledge : BOOL;
 	
 	getZone : FB_LocalSystemTime;
+	bChangeState: BOOL;
+	eNewState : E_MAIN_STATE;
+	bChangeStateDelay: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -50,6 +53,19 @@ ELSIF bTestReset THEN
 ELSIF bTestAcknowledge THEN
 	fbEmStopAlarm.Acknowledge();
 END_IF
+
+IF bChangeState THEN
+	fbMainState.Start();
+	fbMainState.ChangeState(eNewState);
+	bChangeState := FALSE;
+END_IF
+
+IF bChangeStateDelay THEN
+	fbMainState.Start();
+	fbMainState.ChangeStateAfterDelay(eNewState, T#2S);
+	bChangeStateDelay := FALSE;
+END_IF
+
 
 CASE fbMainState.CurrentState OF //Main state machine
 	E_MAIN_STATE.IDLE:
@@ -103,7 +119,17 @@ fbColdStartState(State := eColdStartState, AlarmHandler := fbColdStartHandler, S
       <LineId Id="501" Count="0" />
       <LineId Id="451" Count="2" />
       <LineId Id="502" Count="0" />
-      <LineId Id="454" Count="44" />
+      <LineId Id="454" Count="7" />
+      <LineId Id="581" Count="0" />
+      <LineId Id="580" Count="0" />
+      <LineId Id="588" Count="0" />
+      <LineId Id="582" Count="0" />
+      <LineId Id="587" Count="0" />
+      <LineId Id="583" Count="0" />
+      <LineId Id="604" Count="0" />
+      <LineId Id="606" Count="4" />
+      <LineId Id="605" Count="0" />
+      <LineId Id="462" Count="36" />
       <LineId Id="555" Count="0" />
       <LineId Id="499" Count="1" />
       <LineId Id="48" Count="0" />
